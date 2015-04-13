@@ -1,9 +1,12 @@
 package marinaaaniram.android_instavk.model.REST;
 
+import android.app.Activity;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 
@@ -22,9 +25,22 @@ import java.net.URL;
 
 
 public class RestService extends IntentService {
-    public RestService() {
+    public static final String REST_RESPONSE_BROADCAST = "restJSONResponse";
 
+    public RestService() {
         super("restService");
+    }
+
+    @Override
+    public void onCreate(){
+        super.onCreate();
+//        Log.i("VkWebViewClient ", "on create");
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+//        Log.i("VkWebViewClient ", "on destroy");
     }
 
     @Override
@@ -44,7 +60,9 @@ public class RestService extends IntentService {
                 }
                 reader.close();
 
-                Log.i("VkWebViewClient out", out.toString());
+                Intent intentFilter = new Intent(REST_RESPONSE_BROADCAST);
+                intentFilter.putExtra("responseJSON", out.toString());
+                sendBroadcast(intentFilter);
             }
         } catch (IOException e) {
             e.printStackTrace();
