@@ -28,9 +28,7 @@ public class AuthorizationActivity extends ActionBarActivity {
         webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
 
         class VkWebViewClient extends WebViewClient {
-            public VkWebViewClient() {
-                // TODO Auto-generated constructor stub
-            }
+            public VkWebViewClient() {}
 
             @Override
             public void onPageFinished(WebView view, String url) {
@@ -41,16 +39,12 @@ public class AuthorizationActivity extends ActionBarActivity {
                         String access_token = url.split("#")[1].split("&")[0].split("=")[1];
                         String user_id = url.split("#")[1].split("&")[2].split("=")[1];
 
+                        // TODO safekeeping
                         SharedPreferences pref = getSharedPreferences("access", Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = pref.edit();
                         editor.putString("access_token", access_token);
                         editor.putString("user_id", user_id);
                         editor.apply();
-
-//                        if(pref.contains("access_token")) {
-//                            String aaa = pref.getString("access_token", " ");
-//                            Log.i("VkWebViewClient access_token:", aaa);
-//                        }
                     }
                 }
             }
@@ -58,7 +52,7 @@ public class AuthorizationActivity extends ActionBarActivity {
         wv.setWebViewClient(new VkWebViewClient());
         wv.loadUrl("https://oauth.vk.com/authorize?" +
                     "client_id=4861205&" +
-                    "scope=notify&" +
+                    "scope=photos&" +
                     "redirect_uri=https://oauth.vk.com/blank.html&" +
                     "display=mobile&" +
                     "v=5.29&" +

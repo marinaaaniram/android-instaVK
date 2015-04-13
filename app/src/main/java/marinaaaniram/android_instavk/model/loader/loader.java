@@ -3,7 +3,7 @@ package marinaaaniram.android_instavk.model.loader;
 /**
  * Created by My on 09.04.15.
  */
-public class loader {
+public class Loader {
 
     // Загружает данные для Activity из SQLite
 

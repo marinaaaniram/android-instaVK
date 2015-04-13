@@ -10,7 +10,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import marinaaaniram.android_instavk.R;
-import marinaaaniram.android_instavk.model.REST.restService;
+import marinaaaniram.android_instavk.model.REST.ServiceHelper;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -24,9 +24,9 @@ public class MainActivity extends ActionBarActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                textView.setText("aaa");
-                Intent intent = new Intent(MainActivity.this, restService.class);
-                startService(intent);
+                textView.setText("ServiceHelper calling...");
+                ServiceHelper serviceHelper = new ServiceHelper(getApplicationContext());
+                serviceHelper.getUserAlbumsLink();
             }
         });
     }
@@ -41,18 +41,13 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             Intent intent = new Intent(MainActivity.this, AuthorizationActivity.class);
             startActivity(intent);
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 }
