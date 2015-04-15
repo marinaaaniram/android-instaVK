@@ -2,7 +2,9 @@ package marinaaaniram.android_instavk.UI;
 
 
 import android.app.LoaderManager;
+import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
@@ -14,18 +16,27 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+
+import java.nio.BufferUnderflowException;
 
 import marinaaaniram.android_instavk.R;
 import marinaaaniram.android_instavk.model.REST.ServiceHelper;
+import marinaaaniram.android_instavk.model.loader.MyLoader;
 
 
-public class MainActivity extends ActionBarActivity implements LoaderManager.LoaderCallbacks<String> {
+public class MainActivity extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+    private static final int LOADER_ID = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         final TextView textView = (TextView) findViewById(R.id.textView);
+
+        LoaderManager.LoaderCallbacks<Cursor> mCallbacks = this;
+        getLoaderManager().initLoader(LOADER_ID, null, mCallbacks);
 
         Button requestButton = (Button) findViewById(R.id.requestButton);
         requestButton.setOnClickListener(new View.OnClickListener() {
@@ -36,6 +47,19 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
                 serviceHelper.getUserAlbumsLink();
             }
         });
+
+        Button fakeButton = (Button) findViewById(R.id.fakeButton);
+        fakeButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                textView.setText("fakeButton calling...");
+                ContentValues cv = new ContentValues();
+                cv.put("title", "FAKE title");
+                getContentResolver().insert(Uri.parse("content://aaa/test_table"), cv);
+            }
+        });
+
     }
 
     @Override
@@ -58,17 +82,21 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
     }
 
     @Override
-    public Loader<String> onCreateLoader(int id, Bundle args) {
-        return null;
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Log.d("VkWebViewClient onCreateLoader", Integer.toString(id));
+        return new MyLoader(MainActivity.this, Uri.parse("content://aaa/test_table"),
+                new String[]{"title"}, null, null, null);
     }
 
     @Override
-    public void onLoadFinished(Loader<String> loader, String data) {
-
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        while (data.moveToNext()) {
+            Log.d("VkWebViewClient onLoadFinished", data.getString(data.getColumnIndex("title")));
+        }
     }
 
     @Override
-    public void onLoaderReset(Loader<String> loader) {
+    public void onLoaderReset(Loader<Cursor> loader) {
 
     }
 }
