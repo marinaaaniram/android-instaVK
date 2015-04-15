@@ -23,8 +23,6 @@ import java.net.URL;
 
 
 public class RestService extends IntentService {
-//    public static final String REST_RESPONSE_BROADCAST = "restJSONResponse";
-
     public RestService() {
         super("restService");
     }

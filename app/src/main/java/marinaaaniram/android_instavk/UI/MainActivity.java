@@ -21,7 +21,6 @@ import marinaaaniram.android_instavk.model.REST.ServiceHelper;
 
 
 public class MainActivity extends ActionBarActivity implements LoaderManager.LoaderCallbacks<String> {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,7 +36,6 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
                 serviceHelper.getUserAlbumsLink();
             }
         });
-
     }
 
     @Override

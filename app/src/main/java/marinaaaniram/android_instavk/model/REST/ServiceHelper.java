@@ -10,6 +10,9 @@ import android.content.SharedPreferences;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 
 /**
  * Created by My on 13.04.15.
@@ -17,6 +20,8 @@ import android.util.Log;
 public class ServiceHelper {
     private final Context context;
     private final SharedPreferences sharedPreferences;
+
+    private final String REQUEST_GET_ALBUMS_ALIAS = "GET_ALBUMS";
 
     String URL_VK_API = "https://api.vk.com/method/";   // TODO write to strings.xml
 
@@ -39,6 +44,7 @@ public class ServiceHelper {
                             "owner_id=" + user_id + "&" +
                             "need_covers=1&" +
                             "v=5.30&" +
+                            "need_system=1&" +
                             "access_token=" + access_token;
 
             Intent intent = new Intent(context, RestService.class);
@@ -46,7 +52,6 @@ public class ServiceHelper {
             intent.putExtra("interestedObjectFromJSONResponse",
                             new String[]{"title", "size", "thumb_src"});
             context.startService(intent);
-
         }
     }
 }
