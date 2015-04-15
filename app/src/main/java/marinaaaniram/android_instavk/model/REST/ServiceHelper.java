@@ -50,7 +50,7 @@ public class ServiceHelper {
             Intent intent = new Intent(context, RestService.class);
             intent.putExtra("url", url);
             intent.putExtra("interestedObjectFromJSONResponse",
-                            new String[]{"title", "size", "thumb_src"});
+                            new String[]{"title", "thumb_src"});
             context.startService(intent);
         }
     }

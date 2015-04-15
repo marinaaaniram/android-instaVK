@@ -2,13 +2,14 @@ package marinaaaniram.android_instavk.UI;
 
 
 import android.app.LoaderManager;
-import android.content.ContentResolver;
 import android.content.ContentValues;
-import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,10 +17,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.SimpleCursorAdapter;
+import android.widget.ImageView;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
-import java.nio.BufferUnderflowException;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 import marinaaaniram.android_instavk.R;
 import marinaaaniram.android_instavk.model.REST.ServiceHelper;
@@ -29,11 +35,13 @@ import marinaaaniram.android_instavk.model.loader.MyLoader;
 public class MainActivity extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final int LOADER_ID = 1;
     private TextView textView;
+    private TableLayout albumLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        albumLayout = (TableLayout) findViewById(R.id.albumsLayout);
         textView = (TextView) findViewById(R.id.textView);
 
         LoaderManager.LoaderCallbacks<Cursor> mCallbacks = this;
@@ -60,7 +68,6 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
                 getContentResolver().insert(Uri.parse("content://aaa/test_table"), cv);
             }
         });
-
     }
 
     @Override
@@ -84,15 +91,20 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Log.d("VkWebViewClient onCreateLoader", Integer.toString(id));
         return new MyLoader(MainActivity.this, Uri.parse("content://aaa/test_table"),
                 new String[]{"title"}, null, null, null);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
+        TextView[] albumsTextView = new TextView[data.getCount()];
+
         while (data.moveToNext()) {
-            Log.d("VkWebViewClient onLoadFinished", data.getString(data.getColumnIndex("title")));
+            // TODO in adapter
+            albumsTextView[data.getCount() - 1] = new TextView(this);
+            albumsTextView[data.getCount() - 1].setText(data.getString(data.getColumnIndex("title")));
+            albumLayout.addView(albumsTextView[data.getCount() - 1]);
         }
     }
 

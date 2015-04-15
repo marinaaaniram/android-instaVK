@@ -39,4 +39,12 @@
         android:layout_alignRight="@+id/requestButton"
         android:layout_alignEnd="@+id/requestButton" />
 
+    <TableLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/fakeButton"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/albumsLayout"></TableLayout>
+
 </RelativeLayout>

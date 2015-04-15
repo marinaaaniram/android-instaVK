@@ -20,7 +20,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
             db.execSQL("CREATE TABLE test_table (_id integer primary key autoincrement," +
                     "title text unique," +
-                    "size integer," +
                     "thumb_src text);");
         }
 

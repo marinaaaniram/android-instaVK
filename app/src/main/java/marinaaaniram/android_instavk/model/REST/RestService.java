@@ -1,11 +1,11 @@
 package marinaaaniram.android_instavk.model.REST;
 
 import android.app.IntentService;
-import android.content.BroadcastReceiver;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.util.Log;
 
@@ -15,10 +15,12 @@ import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 
@@ -59,14 +61,16 @@ public class RestService extends IntentService {
                 JSONArray arr = obj.getJSONObject("response").getJSONArray("items");
                 for (int i = 0; i < arr.length(); i++) {
                     ContentValues cv = new ContentValues();
-                    cv.put(jsonObjects[0], arr.getJSONObject(i).getString(jsonObjects[0]));
-                    cv.put(jsonObjects[1], arr.getJSONObject(i).getString(jsonObjects[1]));
-                    cv.put(jsonObjects[2], arr.getJSONObject(i).getString(jsonObjects[2]));
-                    getContentResolver().insert(Uri.parse("content://aaa/test_table"), cv);
+
+                    for (int j = 0; j < jsonObjects.length; ++j) {
+                        Log.d("VkWebViewClient rest", arr.getJSONObject(i).getString(jsonObjects[j]));
+                        cv.put(jsonObjects[j], arr.getJSONObject(i).getString(jsonObjects[j]));
+                        getContentResolver().insert(Uri.parse("content://aaa/test_table"), cv);
+                    }
                 }
             }
-        } catch (IOException | JSONException e) {
-            e.printStackTrace();
+        } catch (JSONException | IOException e1) {
+            e1.printStackTrace();
         }
     }
 }
