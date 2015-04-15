@@ -17,7 +17,6 @@ import android.util.Log;
 public class ServiceHelper {
     private final Context context;
     private final SharedPreferences sharedPreferences;
-//    private final IntentFilter intentFilter;
 
     String URL_VK_API = "https://api.vk.com/method/";   // TODO write to strings.xml
 
@@ -27,19 +26,6 @@ public class ServiceHelper {
         // TODO safekeeping
         // TODO Почему не получается инициализировать с помощью context.getSharedPreferences?!
         sharedPreferences = applicationContext.getSharedPreferences("access", Context.MODE_PRIVATE);
-
-
-        BroadcastReceiver testReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                String responseJSON = intent.getStringExtra("responseJSON");
-                Log.i("VkWebViewClient broadcast", responseJSON);
-            }
-        };
-
-        //TODO unregistered!
-        IntentFilter intentFilter = new IntentFilter(RestService.REST_RESPONSE_BROADCAST);
-        context.registerReceiver(testReceiver, intentFilter);
     }
 
 
@@ -51,11 +37,16 @@ public class ServiceHelper {
 
             String url = URL_VK_API + "photos.getAlbums?" +
                             "owner_id=" + user_id + "&" +
-                            "v=5.29&" +
+                            "need_covers=1&" +
+                            "v=5.30&" +
                             "access_token=" + access_token;
 
             Intent intent = new Intent(context, RestService.class);
-            context.startService(intent.putExtra("url", url));
+            intent.putExtra("url", url);
+            intent.putExtra("interestedObjectFromJSONResponse",
+                            new String[]{"title", "size", "thumb_src"});
+            context.startService(intent);
+
         }
     }
 }
