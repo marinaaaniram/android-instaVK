@@ -66,16 +66,6 @@ public class RestService extends IntentService {
                     cv.put(jsonObjects[2], arr.getJSONObject(i).getString(jsonObjects[2]));
                     getContentResolver().insert(Uri.parse("content://aaa/test_table"), cv);
                 }
-
-                Cursor cursor = getContentResolver().query(Uri.parse("content://aaa/test_table"),
-                        null, null, null, null);
-                while (cursor.moveToNext()) {
-                    Log.d("VkWebViewClient cursor", cursor.getString(cursor.getColumnIndex(jsonObjects[0])));
-                    Log.d("VkWebViewClient cursor", cursor.getString(cursor.getColumnIndex(jsonObjects[1])));
-                    Log.d("VkWebViewClient cursor", cursor.getString(cursor.getColumnIndex(jsonObjects[2])));
-                }
-                cursor.close();
-
             }
         } catch (IOException | JSONException e) {
             e.printStackTrace();
