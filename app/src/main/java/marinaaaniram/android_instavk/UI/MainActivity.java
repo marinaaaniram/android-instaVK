@@ -28,12 +28,13 @@ import marinaaaniram.android_instavk.model.loader.MyLoader;
 
 public class MainActivity extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final int LOADER_ID = 1;
+    private TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        final TextView textView = (TextView) findViewById(R.id.textView);
+        textView = (TextView) findViewById(R.id.textView);
 
         LoaderManager.LoaderCallbacks<Cursor> mCallbacks = this;
         getLoaderManager().initLoader(LOADER_ID, null, mCallbacks);
