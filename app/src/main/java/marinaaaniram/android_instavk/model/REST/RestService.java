@@ -23,6 +23,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import marinaaaniram.android_instavk.R;
+import marinaaaniram.android_instavk.model.utils.JsonParser;
+
 
 public class RestService extends IntentService {
     public RestService() {
@@ -41,37 +44,40 @@ public class RestService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Log.d("VkWebViewClient service", "starting...");
+        Log.d(getString(R.string.log_tag), "starting...");
         String urlString = intent.getStringExtra("url");
-        try {
-            URL url = new URL(urlString);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                InputStream in = new BufferedInputStream(conn.getInputStream());
-                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                StringBuilder out = new StringBuilder();
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    out.append(line);
-                }
-                reader.close();
+        JSONObject response_json = null;
 
-                String[] jsonObjects = intent.getStringArrayExtra("interestedObjectFromJSONResponse");
-                JSONObject obj = new JSONObject(out.toString());
-                JSONArray arr = obj.getJSONObject("response").getJSONArray("items");
-                for (int i = 0; i < arr.length(); i++) {
-                    ContentValues cv = new ContentValues();
+        try{
+            response_json = JsonParser.getJsonFromUrl(urlString);
 
-                    for (int j = 0; j < jsonObjects.length; ++j) {
-                        Log.d("VkWebViewClient rest", arr.getJSONObject(i).getString(jsonObjects[j]));
-                        cv.put(jsonObjects[j], arr.getJSONObject(i).getString(jsonObjects[j]));
-                        getContentResolver().insert(Uri.parse("content://aaa/test_table"), cv);
-                    }
-                }
-            }
-        } catch (JSONException | IOException e1) {
-            e1.printStackTrace();
+        } catch (IOException | JSONException e) {
+            Log.e(JsonParser.log_json, "Can not load json");
         }
+
+        if (response_json != null)
+            try {
+                //JSONArray jsonArray = json.getJSONArray("text");
+                //return jsonArray.get(0).toString();
+
+                String[] interestedObjects = intent.getStringArrayExtra("interestedObjectFromJSONResponse");
+                JSONArray arr = response_json.getJSONObject("response").getJSONArray("items");
+
+                for(int i = 0; i<arr.length();i++){
+
+                    ContentValues cv = new ContentValues();
+                    JSONObject current = arr.getJSONObject(i);
+
+                    for(String s: interestedObjects){
+                        cv.put(s, current.getString(s));
+                    }
+                    getContentResolver().insert(Uri.parse("content://aaa/test_table"), cv);
+                }
+
+
+            } catch (JSONException e) {
+                Log.e(JsonParser.log_json, "Can not parse json");
+            }
     }
 }
 

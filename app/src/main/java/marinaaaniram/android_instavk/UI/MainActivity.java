@@ -1,6 +1,7 @@
 package marinaaaniram.android_instavk.UI;
 
 
+import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -18,6 +19,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
@@ -46,6 +49,22 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
 
         LoaderManager.LoaderCallbacks<Cursor> mCallbacks = this;
         getLoaderManager().initLoader(LOADER_ID, null, mCallbacks);
+
+        // JUST FOR CHECK DATABASE START
+        Cursor cursor = getContentResolver().query(Uri.parse("content://aaa/test_table"), null, null, null, null);
+        cursor.moveToFirst();
+        String columns[] = cursor.getColumnNames();
+        do{
+            String id = cursor.getString(cursor.getColumnIndex("id"));
+            String title = cursor.getString(cursor.getColumnIndex("title"));
+            String thumb = cursor.getString(cursor.getColumnIndex("thumb_src"));
+            if (thumb != null){
+                Log.i(getString(R.string.log_tag), "id: " + id);
+                Log.i(getString(R.string.log_tag), "title: " + title);
+                Log.i(getString(R.string.log_tag), "thumb_src" + thumb);
+                Log.i(getString(R.string.log_tag), "********************************");
+            }
+        }while (cursor.moveToNext());
 
         Button requestButton = (Button) findViewById(R.id.requestButton);
         requestButton.setOnClickListener(new View.OnClickListener() {
