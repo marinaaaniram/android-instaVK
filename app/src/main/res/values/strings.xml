@@ -5,6 +5,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_authorization">authorizationActivity</string>
-    <string name="log_tag">instaVK dev log</string>
+    <string name="log_tag">dev_log</string>
 
 </resources>

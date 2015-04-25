@@ -19,7 +19,10 @@ public class MyContentProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        db = dbHelper.getWritableDatabase();
+        int count = db.delete("test_table", null, null);
+        db.close();
+        return count;
     }
 
     @Override

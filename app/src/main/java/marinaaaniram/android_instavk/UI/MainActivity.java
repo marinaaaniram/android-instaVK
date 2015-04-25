@@ -51,20 +51,23 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
         getLoaderManager().initLoader(LOADER_ID, null, mCallbacks);
 
         // JUST FOR CHECK DATABASE START
+
         Cursor cursor = getContentResolver().query(Uri.parse("content://aaa/test_table"), null, null, null, null);
         cursor.moveToFirst();
         String columns[] = cursor.getColumnNames();
-        do{
-            String id = cursor.getString(cursor.getColumnIndex("id"));
-            String title = cursor.getString(cursor.getColumnIndex("title"));
-            String thumb = cursor.getString(cursor.getColumnIndex("thumb_src"));
-            if (thumb != null){
-                Log.i(getString(R.string.log_tag), "id: " + id);
-                Log.i(getString(R.string.log_tag), "title: " + title);
-                Log.i(getString(R.string.log_tag), "thumb_src" + thumb);
-                Log.i(getString(R.string.log_tag), "********************************");
-            }
-        }while (cursor.moveToNext());
+        if (cursor.getCount() > 0) {
+            do {
+                String id = cursor.getString(cursor.getColumnIndex("_id"));
+                String title = cursor.getString(cursor.getColumnIndex("title"));
+                String thumb = cursor.getString(cursor.getColumnIndex("thumb_src"));
+                if (thumb != null) {
+                    Log.i(getString(R.string.log_tag), "_id: " + id);
+                    Log.i(getString(R.string.log_tag), "title: " + title);
+                    Log.i(getString(R.string.log_tag), "thumb_src" + thumb);
+                    Log.i(getString(R.string.log_tag), "********************************");
+                }
+            } while (cursor.moveToNext());
+        }
 
         Button requestButton = (Button) findViewById(R.id.requestButton);
         requestButton.setOnClickListener(new View.OnClickListener() {
