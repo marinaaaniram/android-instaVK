@@ -20,9 +20,7 @@ public class MyContentProvider extends ContentProvider {
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         db = dbHelper.getWritableDatabase();
-        int count = db.delete("test_table", null, null);
-        db.close();
-        return count;
+        return db.delete("test_table", null, null);
     }
 
     @Override
@@ -48,7 +46,7 @@ public class MyContentProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
-        db = dbHelper.getWritableDatabase();
+        db = dbHelper.getReadableDatabase();
         Cursor cursor = db.query("test_table", projection, selection,
                                  selectionArgs, null, null, sortOrder);
         cursor.setNotificationUri(getContext().getContentResolver(),
