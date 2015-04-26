@@ -4,10 +4,9 @@ import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-
-import marinaaaniram.android_instavk.model.loader.MyLoader;
 
 public class MyContentProvider extends ContentProvider {
 
@@ -32,9 +31,11 @@ public class MyContentProvider extends ContentProvider {
     public Uri insert(Uri uri, ContentValues values) {
         db = dbHelper.getWritableDatabase();
         long rowID = db.insert("test_table", null, values);
-        Uri resultUri = ContentUris.withAppendedId(Uri.parse("content://aaa/test_table"), rowID);
-        getContext().getContentResolver().notifyChange(resultUri, null);
-        return resultUri;
+        if (rowID > 0) {
+            Uri resultUri = ContentUris.withAppendedId(Uri.parse("content://aaa/test_table"), rowID);
+            getContext().getContentResolver().notifyChange(resultUri, null);
+            return resultUri;
+        } throw new SQLException("Failed to add a record into " + uri);
     }
 
     @Override

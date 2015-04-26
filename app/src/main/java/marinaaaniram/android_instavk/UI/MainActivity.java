@@ -1,60 +1,38 @@
 package marinaaaniram.android_instavk.UI;
 
 
-import android.app.Activity;
-import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.content.Loader;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-
-import java.net.HttpURLConnection;
-import java.net.URL;
-
 import marinaaaniram.android_instavk.R;
 import marinaaaniram.android_instavk.model.REST.ServiceHelper;
-import marinaaaniram.android_instavk.model.loader.MyLoader;
 
 
-public class MainActivity extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
-    private static final int LOADER_ID = 1;
+public class MainActivity extends ActionBarActivity{
     private TextView textView;
-    private TableLayout albumLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        albumLayout = (TableLayout) findViewById(R.id.albumsLayout);
         textView = (TextView) findViewById(R.id.textView);
 
-        LoaderManager.LoaderCallbacks<Cursor> mCallbacks = this;
-        getLoaderManager().initLoader(LOADER_ID, null, mCallbacks);
 
-        // JUST FOR CHECK DATABASE START
-
+        // JUST FOR CHECK DATABASE
         Cursor cursor = getContentResolver().query(Uri.parse("content://aaa/test_table"), null, null, null, null);
         cursor.moveToFirst();
-        String columns[] = cursor.getColumnNames();
         if (cursor.getCount() > 0) {
             do {
                 String id = cursor.getString(cursor.getColumnIndex("_id"));
@@ -68,6 +46,7 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
                 }
             } while (cursor.moveToNext());
         }
+        cursor.close();
 
         Button requestButton = (Button) findViewById(R.id.requestButton);
         requestButton.setOnClickListener(new View.OnClickListener() {
@@ -86,7 +65,8 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
             public void onClick(View v) {
                 textView.setText("fakeButton calling...");
                 ContentValues cv = new ContentValues();
-                cv.put("title", "FAKE title");
+                cv.put("title", "FAKE_title3");
+                cv.put("thumb_src", "FAKE_thumb_src3");
                 getContentResolver().insert(Uri.parse("content://aaa/test_table"), cv);
             }
         });
@@ -108,30 +88,10 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
             startActivity(intent);
             return true;
         }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new MyLoader(MainActivity.this, Uri.parse("content://aaa/test_table"),
-                new String[]{"title"}, null, null, null);
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
-        TextView[] albumsTextView = new TextView[data.getCount()];
-
-        while (data.moveToNext()) {
-            // TODO in adapter
-            albumsTextView[data.getCount() - 1] = new TextView(this);
-            albumsTextView[data.getCount() - 1].setText(data.getString(data.getColumnIndex("title")));
-            albumLayout.addView(albumsTextView[data.getCount() - 1]);
+        if (id == R.id.delte_test_table){
+            getContentResolver().delete(Uri.parse("content://aaa/test_table"), null, null);
+            return true;
         }
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-
+        return super.onOptionsItemSelected(item);
     }
 }
