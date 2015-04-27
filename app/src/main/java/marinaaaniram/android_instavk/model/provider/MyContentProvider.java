@@ -21,7 +21,9 @@ public class MyContentProvider extends ContentProvider {
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         db = dbHelper.getWritableDatabase();
-        return db.delete("test_table", null, null);
+        int rowNum = db.delete("test_table", null, null);
+        getContext().getContentResolver().notifyChange(Uri.parse("content://aaa/test_table"), null);
+        return rowNum;
     }
 
     @Override
