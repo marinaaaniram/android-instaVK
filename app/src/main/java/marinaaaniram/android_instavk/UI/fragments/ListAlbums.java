@@ -21,13 +21,12 @@ public class ListAlbums extends ListFragment implements android.app.LoaderManage
 ////        return inflater.inflate(R.layout.fragment_list_albums, null);
 //    }
 
-
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        simpleCursorAdapter = new SimpleCursorAdapter(getActivity(), android.R.layout.simple_list_item_1, null,
-                                        new String[] {"title"}, new int[] {android.R.id.text1}, 0);
+        simpleCursorAdapter = new SimpleCursorAdapter(getActivity(), android.R.layout.two_line_list_item, null,
+                                        new String[] {"title", "thumb_src"}, new int[] {android.R.id.text1, android.R.id.text2}, 0);
         setListAdapter(simpleCursorAdapter);
 
 
@@ -35,11 +34,10 @@ public class ListAlbums extends ListFragment implements android.app.LoaderManage
         getLoaderManager().initLoader(LOADER_ID, null, mCallbacks);
     }
 
-
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return new CursorLoader(getActivity(), Uri.parse("content://aaa/test_table"),
-                new String[]{"_id", "title"}, null, null, null);
+                new String[]{"_id", "title", "thumb_src"}, null, null, null);
     }
 
     @Override
