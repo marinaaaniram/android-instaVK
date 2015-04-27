@@ -18,7 +18,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
             Log.d("VkWebViewClient", "new database");
 
-            db.execSQL("CREATE TABLE test_table (_id integer primary key autoincrement," +
+            db.execSQL("CREATE TABLE test_table (" +
+                    "_id integer primary key autoincrement," +
                     "title text unique," +
                     "thumb_src text);");
         }

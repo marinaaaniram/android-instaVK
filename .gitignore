@@ -2,6 +2,7 @@
 .DS_store
 .gradle
 build
+local.properties
 
 
 *.class

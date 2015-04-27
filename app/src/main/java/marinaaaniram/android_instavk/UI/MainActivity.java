@@ -30,24 +30,6 @@ public class MainActivity extends ActionBarActivity{
         textView = (TextView) findViewById(R.id.textView);
 
 
-        // JUST FOR CHECK DATABASE
-        Cursor cursor = getContentResolver().query(Uri.parse("content://aaa/test_table"), null, null, null, null);
-        cursor.moveToFirst();
-        if (cursor.getCount() > 0) {
-            do {
-                String id = cursor.getString(cursor.getColumnIndex("_id"));
-                String title = cursor.getString(cursor.getColumnIndex("title"));
-                String thumb = cursor.getString(cursor.getColumnIndex("thumb_src"));
-                if (thumb != null) {
-                    Log.i(getString(R.string.log_tag), "_id: " + id);
-                    Log.i(getString(R.string.log_tag), "title: " + title);
-                    Log.i(getString(R.string.log_tag), "thumb_src" + thumb);
-                    Log.i(getString(R.string.log_tag), "********************************");
-                }
-            } while (cursor.moveToNext());
-        }
-        cursor.close();
-
         Button requestButton = (Button) findViewById(R.id.requestButton);
         requestButton.setOnClickListener(new View.OnClickListener() {
             @Override
