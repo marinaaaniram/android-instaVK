@@ -7,28 +7,38 @@ import android.content.CursorLoader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.SimpleCursorAdapter;
+
+
+import java.util.ArrayList;
+
+import marinaaaniram.android_instavk.R;
+import marinaaaniram.android_instavk.model.utils.ImageAdapter;
 
 
 public class ListAlbums extends ListFragment implements android.app.LoaderManager.LoaderCallbacks<Cursor>{
 
     private static final int LOADER_ID = 1;
-    SimpleCursorAdapter simpleCursorAdapter;
+    private ImageAdapter imageAdapter;
 
-//    @Override
-//    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-//                             Bundle savedInstanceState) {
-////        return inflater.inflate(R.layout.fragment_list_albums, null);
-//    }
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.albums_grid, null);
+    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        simpleCursorAdapter = new SimpleCursorAdapter(getActivity(), android.R.layout.two_line_list_item, null,
-                                        new String[] {"title", "thumb_src"}, new int[] {android.R.id.text1, android.R.id.text2}, 0);
-        setListAdapter(simpleCursorAdapter);
-
+        imageAdapter = new ImageAdapter(getActivity());
+        setListAdapter(imageAdapter);
 
         LoaderManager.LoaderCallbacks<Cursor> mCallbacks = this;
         getLoaderManager().initLoader(LOADER_ID, null, mCallbacks);
@@ -42,12 +52,18 @@ public class ListAlbums extends ListFragment implements android.app.LoaderManage
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        simpleCursorAdapter.swapCursor(data);
+        ArrayList<String> title = new ArrayList<String>();
+        ArrayList<String> thumb_src = new ArrayList<String>();
 
+        while(data.moveToNext()) {
+            title.add(data.getString(data.getColumnIndex("title")));
+            thumb_src.add(data.getString(data.getColumnIndex("thumb_src")));
+        }
+        // TODO picasso
+        imageAdapter.updateResults(title);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        simpleCursorAdapter.swapCursor(null);
     }
 }
