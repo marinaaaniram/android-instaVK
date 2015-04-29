@@ -10,6 +10,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 
 import marinaaaniram.android_instavk.R;
@@ -21,6 +23,7 @@ public class ImageAdapter extends BaseAdapter {
     private TextView textView;
     private ImageView imageView;
     private ArrayList<String> title = new ArrayList<String>();
+    private ArrayList<String> thumb_src = new ArrayList<String>();
 
     public ImageAdapter(Context context) {
         this.context = context;
@@ -38,13 +41,15 @@ public class ImageAdapter extends BaseAdapter {
         }
 
         textView.setText(title.get(position));
-        imageView.setImageResource(R.drawable.ic_launcher);
+        Picasso.with(context).load(thumb_src.get(position)).into(imageView);
+//        imageView.setImageResource(R.drawable.ic_launcher);
 
         return view;
     }
 
-    public void updateResults(ArrayList<String> title) {
+    public void updateResults(ArrayList<String> title, ArrayList<String> thumb_src) {
         this.title = title;
+        this.thumb_src = thumb_src;
         notifyDataSetChanged();
     }
 

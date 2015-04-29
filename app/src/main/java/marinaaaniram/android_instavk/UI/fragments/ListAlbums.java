@@ -7,13 +7,9 @@ import android.content.CursorLoader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.SimpleCursorAdapter;
 
 
 import java.util.ArrayList;
@@ -30,7 +26,7 @@ public class ListAlbums extends ListFragment implements android.app.LoaderManage
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.albums_grid, null);
+        return inflater.inflate(R.layout.albums_list, null);
     }
 
     @Override
@@ -59,8 +55,7 @@ public class ListAlbums extends ListFragment implements android.app.LoaderManage
             title.add(data.getString(data.getColumnIndex("title")));
             thumb_src.add(data.getString(data.getColumnIndex("thumb_src")));
         }
-        // TODO picasso
-        imageAdapter.updateResults(title);
+        imageAdapter.updateResults(title, thumb_src);
     }
 
     @Override

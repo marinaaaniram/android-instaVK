@@ -1,9 +1,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
-    <item android:id="@+id/action_settings" android:title="@string/action_settings"
+
+    <item android:id="@+id/action_oauth" android:title="action_oauth"
         android:orderInCategory="100" app:showAsAction="never" />
 
-    <item android:id="@+id/delte_test_table" android:title="delete test_table"
+    <item android:id="@+id/action_delete_table" android:title="delete test_table"
+        android:orderInCategory="100" app:showAsAction="never" />
+
+    <item android:id="@+id/action_fake_title_to_db" android:title="fake_title_to_db"
         android:orderInCategory="100" app:showAsAction="never" />
 </menu>

@@ -39,7 +39,6 @@ public class AuthorizationActivity extends ActionBarActivity {
                         String access_token = url.split("#")[1].split("&")[0].split("=")[1];
                         String user_id = url.split("#")[1].split("&")[2].split("=")[1];
 
-                        // TODO safekeeping
                         SharedPreferences pref = getSharedPreferences("access", Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = pref.edit();
                         editor.putString("access_token", access_token);
