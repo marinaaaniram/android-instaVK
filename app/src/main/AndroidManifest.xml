@@ -35,6 +35,10 @@
             android:name=".UI.AuthorizationActivity"
             android:label="@string/title_activity_authorization" >
         </activity>
+        <activity
+            android:name=".UI.TestMenuActivity"
+            android:label="@string/title_activity_test_menu" >
+        </activity>
     </application>
 
 </manifest>

@@ -7,9 +7,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
 
 import marinaaaniram.android_instavk.R;
 
@@ -44,6 +46,7 @@ public class AuthorizationActivity extends ActionBarActivity {
                         editor.putString("access_token", access_token);
                         editor.putString("user_id", user_id);
                         editor.apply();
+                        finish();
                     }
                 }
             }

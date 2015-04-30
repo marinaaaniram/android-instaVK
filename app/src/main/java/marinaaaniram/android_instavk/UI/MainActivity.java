@@ -2,10 +2,13 @@ package marinaaaniram.android_instavk.UI;
 
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,21 +29,30 @@ public class MainActivity extends ActionBarActivity{
         textView = (TextView) findViewById(R.id.textView);
 
 
+        SharedPreferences pref = getSharedPreferences("access", Context.MODE_PRIVATE);
+        if (pref.getString("access_token", "") .isEmpty()) {
+            Intent intent = new Intent(MainActivity.this, AuthorizationActivity.class);
+            startActivity(intent);
+        }
+        textView.setText("ServiceHelper calling...");
+        ServiceHelper serviceHelper = new ServiceHelper(getApplicationContext());
+        serviceHelper.getUserAlbumsLink();
 
 
-        Button requestButton = (Button) findViewById(R.id.requestButton);
-        requestButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                textView.setText("ServiceHelper calling...");
-                ServiceHelper serviceHelper = new ServiceHelper(getApplicationContext());
-                serviceHelper.getUserAlbumsLink();
-            }
-        });
+//        Button requestButton = (Button) findViewById(R.id.requestButton);
+//        requestButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                textView.setText("ServiceHelper calling...");
+//                ServiceHelper serviceHelper = new ServiceHelper(getApplicationContext());
+//                serviceHelper.getUserAlbumsLink();
+//            }
+//        });
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu
+        (Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
