@@ -3,14 +3,38 @@ package marinaaaniram.android_instavk.model.provider;
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.UriMatcher;
 import android.database.Cursor;
-import android.database.SQLException;
-import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import android.util.Log;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class MyContentProvider extends ContentProvider {
+
+    public final static String AUTHORITY = "ru.android_instavk";
+    public final static String TABLE_ALBUMS = "albums";
+    public final static String TABLE_PHOTOS = "photos";
+
+    public static final int URI_GET_ALL_ALBUMS = 1;
+    public static final int URI_GET_PHOTOS_FROM_ALBUM = 2;
+
+    private static final UriMatcher uriMatcher;
+
+    static {
+        uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+        uriMatcher.addURI(AUTHORITY, TABLE_ALBUMS, URI_GET_ALL_ALBUMS );
+        uriMatcher.addURI(AUTHORITY, TABLE_ALBUMS + "/#", URI_GET_PHOTOS_FROM_ALBUM);
+    }
+
+    private static final Map<Integer, String> columnsMatcher;
+
+    static {
+        columnsMatcher = new HashMap<>();
+        columnsMatcher.put(URI_GET_ALL_ALBUMS, TABLE_ALBUMS);
+        columnsMatcher.put(URI_GET_PHOTOS_FROM_ALBUM, TABLE_PHOTOS);
+    }
 
     DBHelper dbHelper;
     SQLiteDatabase db;
@@ -21,8 +45,14 @@ public class MyContentProvider extends ContentProvider {
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         db = dbHelper.getWritableDatabase();
-        int rowNum = db.delete("test_table", null, null);
-        getContext().getContentResolver().notifyChange(Uri.parse("content://aaa/test_table"), null);
+        int rowNum = 0;
+        int current_uri = uriMatcher.match(uri);
+        String table_name = columnsMatcher.get(current_uri);
+        rowNum = db.delete(table_name, null, null);
+
+        String uri_query = concat_strings("content://", AUTHORITY, "/", table_name);
+        getContext().getContentResolver().notifyChange(Uri.parse(uri_query), null);
+
         return rowNum;
     }
 
@@ -34,10 +64,18 @@ public class MyContentProvider extends ContentProvider {
     @Override
     public Uri insert(Uri uri, ContentValues values) {
         db = dbHelper.getWritableDatabase();
-        long rowID = db.insert("test_table", null, values);
+
+        int current_uri = uriMatcher.match(uri);
+        String table_name = columnsMatcher.get(current_uri);
+
+        long rowID = db.insert(table_name, null, values);
         // TODO throw
-        Uri resultUri = ContentUris.withAppendedId(Uri.parse("content://aaa/test_table"), rowID);
+
+        String uri_query = concat_strings("content://", AUTHORITY, "/", table_name);
+
+        Uri resultUri = ContentUris.withAppendedId(Uri.parse(uri_query), rowID);
         getContext().getContentResolver().notifyChange(resultUri, null);
+
         return resultUri;
     }
 
@@ -51,10 +89,16 @@ public class MyContentProvider extends ContentProvider {
     public Cursor query(Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
         db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.query("test_table", projection, selection,
+
+        int current_uri = uriMatcher.match(uri);
+        String table_name = columnsMatcher.get(current_uri);
+
+        Cursor cursor = db.query(table_name, projection, selection,
                                  selectionArgs, null, null, sortOrder);
+
+        String uri_query = concat_strings("content://", AUTHORITY, "/", table_name);
         cursor.setNotificationUri(getContext().getContentResolver(),
-                                  Uri.parse("content://aaa/test_table"));
+                                  Uri.parse(uri_query));
         return cursor;
     }
 
@@ -62,5 +106,13 @@ public class MyContentProvider extends ContentProvider {
     public int update(Uri uri, ContentValues values, String selection,
                       String[] selectionArgs) {
         throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    public static String concat_strings(String... strings_set){
+        StringBuilder uri_query = new StringBuilder();
+        for(String s: strings_set){
+            uri_query.append(s);
+        }
+        return uri_query.toString();
     }
 }

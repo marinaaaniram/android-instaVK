@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 
 import marinaaaniram.android_instavk.R;
+import marinaaaniram.android_instavk.model.provider.MyContentProvider;
 import marinaaaniram.android_instavk.model.utils.ImageAdapter;
 
 
@@ -42,7 +43,9 @@ public class ListAlbums extends ListFragment implements android.app.LoaderManage
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getActivity(), Uri.parse("content://aaa/test_table"),
+        String uri = MyContentProvider.concat_strings("content://", MyContentProvider.AUTHORITY,
+                "/", MyContentProvider.TABLE_ALBUMS);
+        return new CursorLoader(getActivity(), Uri.parse(uri),
                 new String[]{"_id", "title", "thumb_src"}, null, null, null);
     }
 

@@ -1,17 +1,10 @@
 package marinaaaniram.android_instavk.model.REST;
 
-import android.app.Activity;
-import android.app.Application;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import marinaaaniram.android_instavk.model.provider.MyContentProvider;
 
 
 /**
@@ -49,8 +42,9 @@ public class ServiceHelper {
 
             Intent intent = new Intent(context, RestService.class);
             intent.putExtra("url", url);
+            intent.putExtra("table_name", MyContentProvider.TABLE_ALBUMS);
             intent.putExtra("interestedObjectFromJSONResponse",
-                            new String[]{"title", "thumb_src"});
+                            new String[]{"title", "thumb_src", "id"});
             context.startService(intent);
         }
     }

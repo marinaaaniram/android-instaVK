@@ -18,10 +18,18 @@ public class DBHelper extends SQLiteOpenHelper {
 
             Log.d("VkWebViewClient", "new database");
 
-            db.execSQL("CREATE TABLE test_table (" +
+            db.execSQL("CREATE TABLE albums (" +
                     "_id integer primary key autoincrement," +
-                    "title text unique," +
-                    "thumb_src text);");
+                    "title text," +
+                    "thumb_src text," +
+                    "id integer unique);"); // ALBUB ID IN VK
+
+            db.execSQL("CREATE TABLE photos (" +
+                    "_id integer primary key autoincrement," +
+                    "img_src_small text," +
+                    "img_src_big text," +
+                    "FK_ALBUM_ID integer," +
+                    "FOREIGN KEY(FK_ALBUM_ID) REFERENCES albums(id));");
         }
 
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {

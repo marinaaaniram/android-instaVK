@@ -68,7 +68,7 @@ public class MainActivity extends ActionBarActivity{
             return true;
         }
         if (id == R.id.action_delete_table){
-            getContentResolver().delete(Uri.parse("content://aaa/test_table"), null, null);
+            getContentResolver().delete(Uri.parse("content://aaa/albums"), null, null);
             return true;
         }
         if (id == R.id.action_fake_title_to_db){
@@ -76,7 +76,7 @@ public class MainActivity extends ActionBarActivity{
             ContentValues cv = new ContentValues();
             cv.put("title", "FAKE_title3");
             cv.put("thumb_src", "FAKE_thumb_src3");
-            getContentResolver().insert(Uri.parse("content://aaa/test_table"), cv);
+            getContentResolver().insert(Uri.parse("content://aaa/albums"), cv);
             return true;
         }
         return super.onOptionsItemSelected(item);

@@ -13,6 +13,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 import marinaaaniram.android_instavk.R;
+import marinaaaniram.android_instavk.model.provider.MyContentProvider;
 import marinaaaniram.android_instavk.model.utils.JsonParser;
 
 
@@ -50,6 +51,8 @@ public class RestService extends IntentService {
                 String[] interestedObjects = intent.getStringArrayExtra("interestedObjectFromJSONResponse");
                 JSONArray arr = response_json.getJSONObject("response").getJSONArray("items");
 
+                String table_name = intent.getStringExtra("table_name");
+
                 for(int i = 0; i<arr.length();i++){
 
                     ContentValues cv = new ContentValues();
@@ -58,7 +61,9 @@ public class RestService extends IntentService {
                     for(String s: interestedObjects){
                         cv.put(s, current.getString(s));
                     }
-                    getContentResolver().insert(Uri.parse("content://aaa/test_table"), cv);
+                    String uri_query = MyContentProvider.concat_strings("content://",
+                            MyContentProvider.AUTHORITY, "/", table_name);
+                    getContentResolver().insert(Uri.parse(uri_query), cv);
                 }
 
 

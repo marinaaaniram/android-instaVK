@@ -26,7 +26,7 @@
 
         <provider
             android:name=".model.provider.MyContentProvider"
-            android:authorities="aaa"
+            android:authorities="ru.android_instavk"
             android:enabled="true"
             android:exported="true" >
         </provider>
