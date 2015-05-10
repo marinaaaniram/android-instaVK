@@ -22,14 +22,22 @@ public class DBHelper extends SQLiteOpenHelper {
                     "_id integer primary key autoincrement," +
                     "title text," +
                     "thumb_src text," +
-                    "id integer unique);"); // ALBUB ID IN VK
+                    "id integer unique," +
+                    "owner_id integer," +
+                    "FOREIGN KEY(owner_id) REFERENCES users(id));"); // ALBUB ID IN VK
 
             db.execSQL("CREATE TABLE photos (" +
                     "_id integer primary key autoincrement," +
                     "img_src_small text," +
                     "img_src_big text," +
-                    "FK_ALBUM_ID integer," +
-                    "FOREIGN KEY(FK_ALBUM_ID) REFERENCES albums(id));");
+                    "album_id integer," +
+                    "FOREIGN KEY(album_id) REFERENCES albums(id));");
+
+            db.execSQL("CREATE TABLE users (" +
+                    "_id integer primary key autoincrement," +
+                    "id integer," +
+                    ");");
+
         }
 
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {

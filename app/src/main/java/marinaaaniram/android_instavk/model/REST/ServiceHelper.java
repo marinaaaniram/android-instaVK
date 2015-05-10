@@ -48,4 +48,26 @@ public class ServiceHelper {
             context.startService(intent);
         }
     }
+
+    public void getPhotosFormAlbum(int album_id) {
+        // TODO safekeeping
+        if (sharedPreferences.contains("access_token") && sharedPreferences.contains("user_id")) {
+            String user_id = sharedPreferences.getString("user_id", " ");
+            String access_token = sharedPreferences.getString("access_token", " ");
+
+            String url = URL_VK_API + "photos.get?" +
+                    "owner_id=" + user_id + "&" +
+                    "album_id=" + album_id + "&" +
+                    "v=5.31&" +
+                    "rev=1&" +
+                    "access_token=" + access_token;
+
+            Intent intent = new Intent(context, RestService.class);
+            intent.putExtra("url", url);
+            intent.putExtra("table_name", MyContentProvider.TABLE_PHOTOS);
+            intent.putExtra("interestedObjectFromJSONResponse",
+                    new String[]{"album_id", "id", "owner_id", "photo_75", "photo_604"});
+            context.startService(intent);
+        }
+    }
 }
