@@ -68,6 +68,8 @@ public class ListFriends extends ListFragment implements android.app.LoaderManag
         for(int i = 0; i<first_name.size(); ++i){
             title.add(MyContentProvider.concat_strings(first_name.get(i), " ", last_name.get(i)));
         }
+        setListAdapter(null);
+        setListAdapter(imageAdapter);
         imageAdapter.updateResults(title, avatar);
     }
 

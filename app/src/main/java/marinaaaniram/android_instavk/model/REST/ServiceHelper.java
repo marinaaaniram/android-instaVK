@@ -79,7 +79,8 @@ public class ServiceHelper {
             String url = URL_VK_API + "friends.get?" +
                     "user_id=" + user_id + "&" +
                     "fields=photo_50,user_id&" +
-                    "count=4&" +
+                    "count=20&" +
+                    "order=hints&" +
                     "v=5.31&" +
                     "access_token=" + access_token;
 

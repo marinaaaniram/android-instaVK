@@ -28,14 +28,14 @@ public class DBHelper extends SQLiteOpenHelper {
 
             db.execSQL("CREATE TABLE photos (" +
                     "_id integer primary key autoincrement," +
-                    "img_src_small text," +
-                    "img_src_big text," +
+                    "img_src_small text unique," +
+                    "img_src_big text unique," +
                     "album_id integer," +
                     "FOREIGN KEY(album_id) REFERENCES albums(id));");
 
             db.execSQL("CREATE TABLE users (" +
                     " _id integer primary key autoincrement, " +
-                    " id integer, " + // id user in vk
+                    " id integer unique, " + // id user in vk
                     " first_name text, " +
                     " last_name  text, " +
                     " photo_50 text" +
