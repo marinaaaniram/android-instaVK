@@ -16,9 +16,12 @@ public class MyContentProvider extends ContentProvider {
     public final static String AUTHORITY = "ru.android_instavk";
     public final static String TABLE_ALBUMS = "albums";
     public final static String TABLE_PHOTOS = "photos";
+    public final static String TABLE_USERS = "users";
 
     public static final int URI_GET_ALL_ALBUMS = 1;
     public static final int URI_GET_PHOTOS_FROM_ALBUM = 2;
+    public static final int URI_GET_ALL_PHOTOS = 3;
+    public static final int URI_GET_ALL_USERS = 4;
 
     private static final UriMatcher uriMatcher;
 
@@ -26,6 +29,8 @@ public class MyContentProvider extends ContentProvider {
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         uriMatcher.addURI(AUTHORITY, TABLE_ALBUMS, URI_GET_ALL_ALBUMS );
         uriMatcher.addURI(AUTHORITY, TABLE_ALBUMS + "/#", URI_GET_PHOTOS_FROM_ALBUM);
+        uriMatcher.addURI(AUTHORITY, TABLE_PHOTOS, URI_GET_ALL_PHOTOS);
+        uriMatcher.addURI(AUTHORITY, TABLE_USERS, URI_GET_ALL_USERS);
     }
 
     private static final Map<Integer, String> columnsMatcher;
@@ -34,6 +39,8 @@ public class MyContentProvider extends ContentProvider {
         columnsMatcher = new HashMap<>();
         columnsMatcher.put(URI_GET_ALL_ALBUMS, TABLE_ALBUMS);
         columnsMatcher.put(URI_GET_PHOTOS_FROM_ALBUM, TABLE_PHOTOS);
+        columnsMatcher.put(URI_GET_ALL_PHOTOS, TABLE_PHOTOS);
+        columnsMatcher.put(URI_GET_ALL_USERS, TABLE_USERS);
     }
 
     DBHelper dbHelper;

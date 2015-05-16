@@ -35,7 +35,10 @@ public class DBHelper extends SQLiteOpenHelper {
 
             db.execSQL("CREATE TABLE users (" +
                     "_id integer primary key autoincrement," +
-                    "id integer," +
+                    "uid integer," +  // id user in vk
+                    "first_name text," +
+                    "last_name  text," +
+                    "photo_50 text" +
                     ");");
 
         }

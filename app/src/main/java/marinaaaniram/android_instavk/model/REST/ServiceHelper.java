@@ -44,7 +44,7 @@ public class ServiceHelper {
             intent.putExtra("url", url);
             intent.putExtra("table_name", MyContentProvider.TABLE_ALBUMS);
             intent.putExtra("interestedObjectFromJSONResponse",
-                            new String[]{"title", "thumb_src", "id"});
+                            new String[]{"title", "thumb_src", "id", "owner_id"});
             context.startService(intent);
         }
     }
@@ -67,6 +67,25 @@ public class ServiceHelper {
             intent.putExtra("table_name", MyContentProvider.TABLE_PHOTOS);
             intent.putExtra("interestedObjectFromJSONResponse",
                     new String[]{"album_id", "id", "owner_id", "photo_75", "photo_604"});
+            context.startService(intent);
+        }
+    }
+
+    public void getFriendsList(int user_id) {
+        // TODO safekeeping
+        if (sharedPreferences.contains("access_token") && sharedPreferences.contains("user_id")) {
+            String access_token = sharedPreferences.getString("access_token", " ");
+            String url = URL_VK_API + "users.get?" +
+                    "user_id=" + user_id + "&" +
+                    "fields=photo_50&" +
+                    "v=5.31&" +
+                    "access_token=" + access_token;
+
+            Intent intent = new Intent(context, RestService.class);
+            intent.putExtra("url", url);
+            intent.putExtra("table_name", MyContentProvider.TABLE_USERS);
+            intent.putExtra("interestedObjectFromJSONResponse",
+                    new String[]{"uid", "first_name", "last_name", "photo_50"});
             context.startService(intent);
         }
     }
