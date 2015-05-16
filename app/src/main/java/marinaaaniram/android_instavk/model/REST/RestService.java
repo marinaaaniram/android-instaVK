@@ -47,9 +47,16 @@ public class RestService extends IntentService {
 
         if (response_json != null)
             try {
+                JSONArray arr = null;
 
                 String[] interestedObjects = intent.getStringArrayExtra("interestedObjectFromJSONResponse");
-                JSONArray arr = response_json.getJSONObject("response").getJSONArray("items");
+                if (intent.getStringExtra("no_items") == null) {
+                    JSONObject response = response_json.getJSONObject("response");
+                    arr = response.getJSONArray("items");
+                }
+                else {
+                    arr = response_json.getJSONArray("response");
+                }
 
                 String table_name = intent.getStringExtra("table_name");
 

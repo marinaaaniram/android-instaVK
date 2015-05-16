@@ -16,27 +16,33 @@
         android:layout_alignParentEnd="true"
         android:id="@+id/textView" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="make request"
-        android:id="@+id/requestButton"
-        android:layout_marginTop="35dp"
-        android:layout_below="@+id/textView"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+    <!--<Button-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="make request"-->
+        <!--android:id="@+id/requestButton"-->
+        <!--android:layout_marginTop="35dp"-->
+        <!--android:layout_below="@+id/textView"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_alignParentEnd="true"-->
+        <!--android:layout_alignParentLeft="true"-->
+        <!--android:layout_alignParentStart="true" />-->
 
-    <fragment
-        android:name="marinaaaniram.android_instavk.UI.fragments.ListAlbums"
+    <!--<fragment-->
+        <!--android:name="marinaaaniram.android_instavk.UI.fragments.ListAlbums"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="300dp"-->
+        <!--android:layout_alignParentLeft="true"-->
+        <!--android:layout_alignParentStart="true"-->
+        <!--android:layout_below="@+id/requestButton"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_alignParentEnd="true" />-->
+
+    <FrameLayout
+        android:id="@+id/frame_for_fragments"
         android:layout_width="wrap_content"
-        android:layout_height="300dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/requestButton"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_height="wrap_content">
+    </FrameLayout>
 
 
 </RelativeLayout>

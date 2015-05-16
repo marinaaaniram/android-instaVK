@@ -5,9 +5,13 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.util.Log;
 
+import java.sql.RowId;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -77,12 +81,19 @@ public class MyContentProvider extends ContentProvider {
 
         long rowID = db.insert(table_name, null, values);
         // TODO throw
+        Uri resultUri = null;
+        if (rowID > 0) try {
+            String uri_query = concat_strings("content://", AUTHORITY, "/", table_name);
 
-        String uri_query = concat_strings("content://", AUTHORITY, "/", table_name);
-
-        Uri resultUri = ContentUris.withAppendedId(Uri.parse(uri_query), rowID);
-        getContext().getContentResolver().notifyChange(resultUri, null);
-
+            resultUri = ContentUris.withAppendedId(Uri.parse(uri_query), rowID);
+            getContext().getContentResolver().notifyChange(resultUri, null);
+        }
+        catch (SQLiteConstraintException e){
+            Log.e("dev_log", "SQLiteConstraintException :" + values.toString());
+        }
+        catch (Exception e) {
+            Log.e("dev_log", "Can not insert into database value :" + values.toString());
+        }
         return resultUri;
     }
 

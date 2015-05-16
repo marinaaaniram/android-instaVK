@@ -34,11 +34,11 @@ public class DBHelper extends SQLiteOpenHelper {
                     "FOREIGN KEY(album_id) REFERENCES albums(id));");
 
             db.execSQL("CREATE TABLE users (" +
-                    "_id integer primary key autoincrement," +
-                    "uid integer," +  // id user in vk
-                    "first_name text," +
-                    "last_name  text," +
-                    "photo_50 text" +
+                    " _id integer primary key autoincrement, " +
+                    " id integer, " + // id user in vk
+                    " first_name text, " +
+                    " last_name  text, " +
+                    " photo_50 text" +
                     ");");
 
         }

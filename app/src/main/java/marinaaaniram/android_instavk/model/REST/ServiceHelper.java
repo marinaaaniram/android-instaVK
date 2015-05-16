@@ -71,10 +71,32 @@ public class ServiceHelper {
         }
     }
 
-    public void getFriendsList(int user_id) {
+    public void getFriendsList() {
         // TODO safekeeping
         if (sharedPreferences.contains("access_token") && sharedPreferences.contains("user_id")) {
             String access_token = sharedPreferences.getString("access_token", " ");
+            String user_id = sharedPreferences.getString("user_id", " ");
+            String url = URL_VK_API + "friends.get?" +
+                    "user_id=" + user_id + "&" +
+                    "fields=photo_50,user_id&" +
+                    "count=4&" +
+                    "v=5.31&" +
+                    "access_token=" + access_token;
+
+            Intent intent = new Intent(context, RestService.class);
+            intent.putExtra("url", url);
+            intent.putExtra("table_name", MyContentProvider.TABLE_USERS);
+            intent.putExtra("interestedObjectFromJSONResponse",
+                    new String[]{"first_name", "last_name", "photo_50", "id"});
+            context.startService(intent);
+        }
+    }
+
+    public void getOwnerInfo() {
+        // TODO safekeeping
+        if (sharedPreferences.contains("access_token") && sharedPreferences.contains("user_id")) {
+            String access_token = sharedPreferences.getString("access_token", " ");
+            String user_id = sharedPreferences.getString("user_id", " ");
             String url = URL_VK_API + "users.get?" +
                     "user_id=" + user_id + "&" +
                     "fields=photo_50&" +
@@ -83,9 +105,10 @@ public class ServiceHelper {
 
             Intent intent = new Intent(context, RestService.class);
             intent.putExtra("url", url);
+            intent.putExtra("no_items", "yes");
             intent.putExtra("table_name", MyContentProvider.TABLE_USERS);
             intent.putExtra("interestedObjectFromJSONResponse",
-                    new String[]{"uid", "first_name", "last_name", "photo_50"});
+                    new String[]{"first_name", "last_name", "photo_50", "id"});
             context.startService(intent);
         }
     }

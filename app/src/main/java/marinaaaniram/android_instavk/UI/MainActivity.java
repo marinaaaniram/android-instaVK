@@ -1,6 +1,7 @@
 package marinaaaniram.android_instavk.UI;
 
 
+import android.app.FragmentTransaction;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -17,12 +18,18 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import marinaaaniram.android_instavk.R;
+import marinaaaniram.android_instavk.UI.fragments.ListAlbums;
+import marinaaaniram.android_instavk.UI.fragments.ListFriends;
 import marinaaaniram.android_instavk.model.REST.ServiceHelper;
 import marinaaaniram.android_instavk.model.provider.MyContentProvider;
 
 
 public class MainActivity extends ActionBarActivity{
     private TextView textView;
+    private ListAlbums listAlbums;
+    private ListFriends listFriends;
+    private FragmentTransaction fragmentTransaction;
+    private ServiceHelper serviceHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,13 +37,13 @@ public class MainActivity extends ActionBarActivity{
         setContentView(R.layout.activity_main);
         textView = (TextView) findViewById(R.id.textView);
 
-
+        listAlbums = new ListAlbums();
+        fragmentTransaction = getFragmentManager().beginTransaction().add(R.id.frame_for_fragments, listAlbums);
+        fragmentTransaction.commit();
 
         // JUST FOR CHECK DATABASE
         // Info log with tag - dev_log
         show_database_data(MyContentProvider.TABLE_ALBUMS, MyContentProvider.TABLE_PHOTOS, MyContentProvider.TABLE_USERS);
-
-
 
         SharedPreferences pref = getSharedPreferences("access", Context.MODE_PRIVATE);
         if (pref.getString("access_token", "") .isEmpty()) {
@@ -44,7 +51,7 @@ public class MainActivity extends ActionBarActivity{
             startActivity(intent);
         }
         textView.setText("ServiceHelper calling...");
-        ServiceHelper serviceHelper = new ServiceHelper(getApplicationContext());
+        serviceHelper = new ServiceHelper(getApplicationContext());
         serviceHelper.getUserAlbumsLink();
 
 
@@ -76,10 +83,12 @@ public class MainActivity extends ActionBarActivity{
             startActivity(intent);
             return true;
         }
+
         if (id == R.id.action_delete_table){
             getContentResolver().delete(Uri.parse("content://ru.android.insta_vk/albums"), null, null);
             return true;
         }
+
         if (id == R.id.action_fake_title_to_db){
             textView.setText("fakeButton calling...");
             ContentValues cv = new ContentValues();
@@ -87,6 +96,16 @@ public class MainActivity extends ActionBarActivity{
             cv.put("thumb_src", "FAKE_thumb_src3");
             getContentResolver().insert(Uri.parse("content://aaa/albums"), cv);
             return true;
+        }
+
+        if (id == R.id.get_my_friends){
+            serviceHelper.getFriendsList();
+
+            listFriends = new ListFriends();
+            fragmentTransaction = getFragmentManager().beginTransaction().replace(R.id.frame_for_fragments, listFriends);
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
+
         }
         return super.onOptionsItemSelected(item);
     }

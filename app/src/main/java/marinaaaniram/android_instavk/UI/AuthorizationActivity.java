@@ -1,7 +1,9 @@
 package marinaaaniram.android_instavk.UI;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,7 +15,12 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
+import org.json.JSONObject;
+
 import marinaaaniram.android_instavk.R;
+import marinaaaniram.android_instavk.model.REST.RestService;
+import marinaaaniram.android_instavk.model.REST.ServiceHelper;
+import marinaaaniram.android_instavk.model.provider.MyContentProvider;
 
 public class AuthorizationActivity extends ActionBarActivity {
 
@@ -46,6 +53,10 @@ public class AuthorizationActivity extends ActionBarActivity {
                         editor.putString("access_token", access_token);
                         editor.putString("user_id", user_id);
                         editor.apply();
+
+                        ServiceHelper serviceHelper = new ServiceHelper(getApplicationContext());
+                        serviceHelper.getOwnerInfo();
+
                         finish();
                     }
                 }
