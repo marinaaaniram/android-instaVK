@@ -27,14 +27,14 @@ public class ListAlbums extends ListFragment implements android.app.LoaderManage
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.albums_list, null);
+        return inflater.inflate(R.layout.fragment_list, null);
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        imageAdapter = new ImageAdapter(getActivity(), R.layout.albums_items);
+        imageAdapter = new ImageAdapter(getActivity(), R.layout.fragment_items);
         setListAdapter(imageAdapter);
 
         LoaderManager.LoaderCallbacks<Cursor> mCallbacks = this;

@@ -1,6 +1,12 @@
 package marinaaaniram.android_instavk.UI;
 
 import android.app.Activity;
+import android.app.FragmentTransaction;
+import android.app.ListFragment;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.net.Uri;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -8,6 +14,7 @@ import android.support.v4.app.FragmentManager;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,19 +25,19 @@ import android.support.v4.widget.DrawerLayout;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import java.util.List;
+
 import marinaaaniram.android_instavk.R;
+import marinaaaniram.android_instavk.UI.fragments.ListAlbums;
+import marinaaaniram.android_instavk.UI.fragments.ListFriends;
+import marinaaaniram.android_instavk.model.REST.ServiceHelper;
+import marinaaaniram.android_instavk.model.provider.MyContentProvider;
 
 public class TestMenuActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
-    /**
-     * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
-     */
     private NavigationDrawerFragment mNavigationDrawerFragment;
-
-    /**
-     * Used to store the last screen title. For use in {@link #restoreActionBar()}.
-     */
+    private ServiceHelper serviceHelper;
     private CharSequence mTitle;
 
     @Override
@@ -46,34 +53,62 @@ public class TestMenuActivity extends ActionBarActivity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+        mTitle = "Albums";
+
+        serviceHelper = new ServiceHelper(getApplicationContext());
+        serviceHelper.getUserAlbumsLink();      // TODO почему падает в onNavigationDrawerItemSelected?!
+
+        // JUST FOR CHECK DATABASE
+        // Info log with tag - dev_log
+        show_database_data(MyContentProvider.TABLE_ALBUMS, MyContentProvider.TABLE_PHOTOS, MyContentProvider.TABLE_USERS);
+
+        SharedPreferences pref = getSharedPreferences("access", Context.MODE_PRIVATE);
+        if (pref.getString("access_token", "") .isEmpty()) {
+            Intent intent = new Intent(TestMenuActivity.this, AuthorizationActivity.class);
+            startActivity(intent);
+        }
+
     }
 
     @Override
-    public void onNavigationDrawerItemSelected(int position) {
-        // update the main content by replacing fragments
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
-                .commit();
+    protected void onStart() {
+        super.onStart();
     }
 
-    public void onSectionAttached(int number) {
-        switch (number) {
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
+
+
+
+
+    @Override
+    public void onNavigationDrawerItemSelected(int position) {
+
+        FragmentTransaction fragmentTransaction = null;
+
+        switch (position) {
+            case 0:
+                ListAlbums listAlbums = new ListAlbums();
+                fragmentTransaction = getFragmentManager().beginTransaction().replace(R.id.container, listAlbums);
+                fragmentTransaction.commit();
+                mTitle = "Albums";
+                break;
             case 1:
-                mTitle = getString(R.string.title_section1);
-                break;
-            case 2:
-                mTitle = getString(R.string.title_section2);
-                break;
-            case 3:
-                mTitle = getString(R.string.title_section3);
+                ListFriends listFriends = new ListFriends();
+                fragmentTransaction = getFragmentManager().beginTransaction().replace(R.id.container, listFriends);
+                fragmentTransaction.commit();
+                serviceHelper.getFriendsList();
+                mTitle = "Friends";
                 break;
         }
+
     }
 
     public void restoreActionBar() {
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setTitle(mTitle);
     }
@@ -82,9 +117,6 @@ public class TestMenuActivity extends ActionBarActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (!mNavigationDrawerFragment.isDrawerOpen()) {
-            // Only show items in the action bar relevant to this screen
-            // if the drawer is not showing. Otherwise, let the drawer
-            // decide what to show in the action bar.
             getMenuInflater().inflate(R.menu.test_menu, menu);
             restoreActionBar();
             return true;
@@ -94,12 +126,8 @@ public class TestMenuActivity extends ActionBarActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
@@ -107,44 +135,32 @@ public class TestMenuActivity extends ActionBarActivity
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
+    public void show_database_data(String... tables){
+        for(String table_name: tables){
+            String path = MyContentProvider.concat_strings("content://", MyContentProvider.AUTHORITY, "/", table_name);
 
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
+            Log.i(getString(R.string.log_tag), "********************************");
+            Log.i(getString(R.string.log_tag), " -- TABLE : " + table_name);
 
-        public PlaceholderFragment() {
-        }
+            Cursor cursor = getContentResolver().query(Uri.parse(path), null, null, null, null);
+            cursor.moveToFirst();
+            if (cursor.getCount() > 0) {
+                do{
+                    int col_count = cursor.getColumnCount();
 
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_test_menu, container, false);
-            return rootView;
-        }
+                    for(int i = 0; i< col_count; ++i){
+                        String column_name = cursor.getColumnName(i);
+                        String data = cursor.getString(i);
+                        Log.i(getString(R.string.log_tag), "--- " + column_name + " : " + data);
+                    }
+                    Log.i(getString(R.string.log_tag), "------------------------");
 
-        @Override
-        public void onAttach(Activity activity) {
-            super.onAttach(activity);
-            ((TestMenuActivity) activity).onSectionAttached(
-                    getArguments().getInt(ARG_SECTION_NUMBER));
+                }while (cursor.moveToNext());
+            }
+            cursor.close();
         }
     }
 
 }
+
+
