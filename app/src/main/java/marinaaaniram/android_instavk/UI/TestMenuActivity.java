@@ -16,6 +16,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,8 +38,8 @@ public class TestMenuActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     private NavigationDrawerFragment mNavigationDrawerFragment;
-    private ServiceHelper serviceHelper;
     private CharSequence mTitle;
+    private SharedPreferences sharedPreferences = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,55 +56,54 @@ public class TestMenuActivity extends ActionBarActivity
                 (DrawerLayout) findViewById(R.id.drawer_layout));
         mTitle = "Albums";
 
-        serviceHelper = new ServiceHelper(getApplicationContext());
-        serviceHelper.getUserAlbumsLink();      // TODO почему падает в onNavigationDrawerItemSelected?!
 
         // JUST FOR CHECK DATABASE
         // Info log with tag - dev_log
         show_database_data(MyContentProvider.TABLE_ALBUMS, MyContentProvider.TABLE_PHOTOS, MyContentProvider.TABLE_USERS);
 
-        SharedPreferences pref = getSharedPreferences("access", Context.MODE_PRIVATE);
-        if (pref.getString("access_token", "") .isEmpty()) {
+        sharedPreferences = getSharedPreferences("access", Context.MODE_PRIVATE);
+        if (sharedPreferences.getString("access_token", "") .isEmpty()) {
             Intent intent = new Intent(TestMenuActivity.this, AuthorizationActivity.class);
             startActivity(intent);
         }
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-    }
-
-
-
-
-    @Override
     public void onNavigationDrawerItemSelected(int position) {
 
         FragmentTransaction fragmentTransaction = null;
+        SharedPreferences sharedPreferences = getSharedPreferences("access", Context.MODE_PRIVATE);
 
         switch (position) {
             case 0:
                 ListAlbums listAlbums = new ListAlbums();
+
+                Bundle args = new Bundle();
+                args.putString("user_id", sharedPreferences.getString("user_id", ""));
+                listAlbums.setArguments(args);
+
                 fragmentTransaction = getFragmentManager().beginTransaction().replace(R.id.container, listAlbums);
+                fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
                 mTitle = "Albums";
                 break;
             case 1:
                 ListFriends listFriends = new ListFriends();
                 fragmentTransaction = getFragmentManager().beginTransaction().replace(R.id.container, listFriends);
+                fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
-                serviceHelper.getFriendsList();
                 mTitle = "Friends";
                 break;
+            case 2:
+                sharedPreferences = getSharedPreferences("access", Context.MODE_PRIVATE);
+                sharedPreferences.edit().remove("access_token").apply();
+                if (sharedPreferences.getString("access_token", "") .isEmpty()) {
+                    Intent intent = new Intent(TestMenuActivity.this, AuthorizationActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                }
+                break;
         }
-
     }
 
     public void restoreActionBar() {

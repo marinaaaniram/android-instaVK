@@ -3,6 +3,7 @@ package marinaaaniram.android_instavk.model.REST;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import marinaaaniram.android_instavk.model.provider.MyContentProvider;
 
@@ -14,23 +15,20 @@ public class ServiceHelper {
     private final Context context;
     private final SharedPreferences sharedPreferences;
 
-    private final String REQUEST_GET_ALBUMS_ALIAS = "GET_ALBUMS";
-
     String URL_VK_API = "https://api.vk.com/method/";   // TODO write to strings.xml
 
     public ServiceHelper(Context applicationContext) {
         context = applicationContext;
 
-        // TODO safekeeping
         // TODO Почему не получается инициализировать с помощью context.getSharedPreferences?!
         sharedPreferences = applicationContext.getSharedPreferences("access", Context.MODE_PRIVATE);
+
     }
 
 
-    public void getUserAlbumsLink() {
+    public void getUserAlbumsLink(String user_id) {
         // TODO safekeeping
         if (sharedPreferences.contains("access_token") && sharedPreferences.contains("user_id")) {
-            String user_id = sharedPreferences.getString("user_id", " ");
             String access_token = sharedPreferences.getString("access_token", " ");
 
             String url = URL_VK_API + "photos.getAlbums?" +

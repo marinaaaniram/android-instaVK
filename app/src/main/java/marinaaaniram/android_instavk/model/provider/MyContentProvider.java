@@ -112,7 +112,7 @@ public class MyContentProvider extends ContentProvider {
         String table_name = columnsMatcher.get(current_uri);
 
         Cursor cursor = db.query(table_name, projection, selection,
-                                 selectionArgs, null, null, sortOrder);
+                    selectionArgs, null, null, sortOrder);
 
         String uri_query = concat_strings("content://", AUTHORITY, "/", table_name);
         cursor.setNotificationUri(getContext().getContentResolver(),

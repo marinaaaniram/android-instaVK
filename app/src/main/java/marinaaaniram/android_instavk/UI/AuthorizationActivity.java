@@ -10,12 +10,15 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.CookieSyncManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import org.json.JSONObject;
+
+import java.net.CookieManager;
 
 import marinaaaniram.android_instavk.R;
 import marinaaaniram.android_instavk.model.REST.RestService;
@@ -63,7 +66,7 @@ public class AuthorizationActivity extends ActionBarActivity {
             }
         }
         wv.setWebViewClient(new VkWebViewClient());
-        wv.loadUrl("https://oauth.vk.com/authorize?" +
+            wv.loadUrl("https://oauth.vk.com/authorize?" +
                     "client_id=4861205&" +
                     "scope=photos&" +
                     "redirect_uri=https://oauth.vk.com/blank.html&" +

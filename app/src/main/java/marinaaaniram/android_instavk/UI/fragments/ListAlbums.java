@@ -4,9 +4,11 @@ import android.app.ListFragment;
 import android.app.LoaderManager;
 import android.content.Loader;
 import android.content.CursorLoader;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +17,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 
 import marinaaaniram.android_instavk.R;
+import marinaaaniram.android_instavk.model.REST.ServiceHelper;
 import marinaaaniram.android_instavk.model.provider.MyContentProvider;
 import marinaaaniram.android_instavk.model.utils.ImageAdapter;
 
@@ -28,6 +31,19 @@ public class ListAlbums extends ListFragment implements android.app.LoaderManage
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_list, null);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        ServiceHelper serviceHelper = new ServiceHelper(getActivity().getApplicationContext());
+        serviceHelper.getUserAlbumsLink(getArguments().get("user_id").toString());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     @Override
@@ -45,8 +61,10 @@ public class ListAlbums extends ListFragment implements android.app.LoaderManage
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String uri = MyContentProvider.concat_strings("content://", MyContentProvider.AUTHORITY,
                 "/", MyContentProvider.TABLE_ALBUMS);
+
         return new CursorLoader(getActivity(), Uri.parse(uri),
-                new String[]{"_id", "title", "thumb_src"}, null, null, null);
+                new String[]{"_id", "title", "thumb_src"}, "owner_id = ?",
+                new String[] {getArguments().get("user_id").toString()}, null);
     }
 
     @Override

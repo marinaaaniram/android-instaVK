@@ -1,5 +1,6 @@
 package marinaaaniram.android_instavk.UI.fragments;
 
+import android.app.FragmentTransaction;
 import android.app.ListFragment;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
@@ -10,10 +11,14 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Vector;
 
 import marinaaaniram.android_instavk.R;
+import marinaaaniram.android_instavk.model.REST.ServiceHelper;
 import marinaaaniram.android_instavk.model.provider.MyContentProvider;
 import marinaaaniram.android_instavk.model.utils.ImageAdapter;
 
@@ -25,6 +30,7 @@ public class ListFriends extends ListFragment implements android.app.LoaderManag
 
     private static final int LOADER_ID = 2;
     private ImageAdapter imageAdapter;
+    private Vector<String> idFriend = new Vector<String>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -44,11 +50,36 @@ public class ListFriends extends ListFragment implements android.app.LoaderManag
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        ServiceHelper serviceHelper = new ServiceHelper(getActivity().getApplicationContext());
+        serviceHelper.getFriendsList();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+        ListAlbums listAlbums = new ListAlbums();
+        Bundle args = new Bundle();
+        args.putString("user_id", idFriend.get(position));
+        listAlbums.setArguments(args);
+
+        FragmentTransaction fragmentTransaction = null;
+        fragmentTransaction = getActivity().getFragmentManager().beginTransaction().replace(R.id.container, listAlbums);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
+
+    @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String uri = MyContentProvider.concat_strings("content://", MyContentProvider.AUTHORITY,
                 "/", MyContentProvider.TABLE_USERS);
         return new CursorLoader(getActivity(), Uri.parse(uri),
-                new String[]{"_id", "first_name", "last_name", "photo_50"}, null, null, null);
+                new String[]{"_id", "id", "first_name", "last_name", "photo_50"}, null, null, null);
     }
 
     @Override
@@ -63,6 +94,7 @@ public class ListFriends extends ListFragment implements android.app.LoaderManag
             first_name.add(data.getString(data.getColumnIndex("first_name")));
             last_name.add(data.getString(data.getColumnIndex("last_name")));
             avatar.add(data.getString(data.getColumnIndex("photo_50")));
+            idFriend.addElement(data.getString(data.getColumnIndex("id")));
         }
 
         for(int i = 0; i<first_name.size(); ++i){
