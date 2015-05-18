@@ -128,6 +128,8 @@ public class TestMenuActivity extends ActionBarActivity
         int id = item.getItemId();
 
         if (id == R.id.action_settings) {
+            Intent intent = new Intent(TestMenuActivity.this, AuthorizationActivity.class);
+            startActivity(intent);
             return true;
         }
 
