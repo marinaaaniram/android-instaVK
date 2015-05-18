@@ -67,7 +67,6 @@ public class TestMenuActivity extends ActionBarActivity
             Intent intent = new Intent(TestMenuActivity.this, AuthorizationActivity.class);
             startActivity(intent);
         }
-
     }
 
     @Override
