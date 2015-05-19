@@ -9,6 +9,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.sql.RowId;
@@ -26,6 +27,7 @@ public class MyContentProvider extends ContentProvider {
     public static final int URI_GET_PHOTOS_FROM_ALBUM = 2;
     public static final int URI_GET_ALL_PHOTOS = 3;
     public static final int URI_GET_ALL_USERS = 4;
+    public static final int URI_GET_BIG_PHOTO = 5;
 
     private static final UriMatcher uriMatcher;
 
@@ -33,6 +35,7 @@ public class MyContentProvider extends ContentProvider {
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         uriMatcher.addURI(AUTHORITY, TABLE_ALBUMS, URI_GET_ALL_ALBUMS );
         uriMatcher.addURI(AUTHORITY, TABLE_ALBUMS + "/#", URI_GET_PHOTOS_FROM_ALBUM);
+        uriMatcher.addURI(AUTHORITY, TABLE_PHOTOS + "/#", URI_GET_BIG_PHOTO);
         uriMatcher.addURI(AUTHORITY, TABLE_PHOTOS, URI_GET_ALL_PHOTOS);
         uriMatcher.addURI(AUTHORITY, TABLE_USERS, URI_GET_ALL_USERS);
     }
@@ -45,6 +48,7 @@ public class MyContentProvider extends ContentProvider {
         columnsMatcher.put(URI_GET_PHOTOS_FROM_ALBUM, TABLE_PHOTOS);
         columnsMatcher.put(URI_GET_ALL_PHOTOS, TABLE_PHOTOS);
         columnsMatcher.put(URI_GET_ALL_USERS, TABLE_USERS);
+        columnsMatcher.put(URI_GET_BIG_PHOTO, TABLE_PHOTOS);
     }
 
     DBHelper dbHelper;
@@ -111,12 +115,24 @@ public class MyContentProvider extends ContentProvider {
         int current_uri = uriMatcher.match(uri);
         String table_name = columnsMatcher.get(current_uri);
 
+
+        if (current_uri == URI_GET_BIG_PHOTO) {
+            String id = uri.getLastPathSegment();
+            if (TextUtils.isEmpty(selection)) {
+                selection = " id = " + id;
+            } else {
+                selection = selection + " AND " + " id = " + id;
+            }
+        }
+
         Cursor cursor = db.query(table_name, projection, selection,
                     selectionArgs, null, null, sortOrder);
 
-        String uri_query = concat_strings("content://", AUTHORITY, "/", table_name);
-        cursor.setNotificationUri(getContext().getContentResolver(),
-                                  Uri.parse(uri_query));
+        if (current_uri != URI_GET_BIG_PHOTO) {
+            String uri_query = concat_strings("content://", AUTHORITY, "/", table_name);
+            cursor.setNotificationUri(getContext().getContentResolver(),
+                    Uri.parse(uri_query));
+        }
         return cursor;
     }
 

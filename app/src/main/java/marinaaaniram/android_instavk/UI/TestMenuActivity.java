@@ -44,13 +44,14 @@ public class TestMenuActivity extends ActionBarActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_test_menu);
 
         sharedPreferences = getSharedPreferences("access", Context.MODE_PRIVATE);
         if (sharedPreferences.getString("access_token", "") .isEmpty()) {
             Intent intent = new Intent(TestMenuActivity.this, AuthorizationActivity.class);
             startActivity(intent);
         }
+
+        setContentView(R.layout.activity_test_menu);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -134,6 +135,15 @@ public class TestMenuActivity extends ActionBarActivity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getFragmentManager().getBackStackEntryCount() > 0 ){
+            getFragmentManager().popBackStack();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     public void show_database_data(String... tables){

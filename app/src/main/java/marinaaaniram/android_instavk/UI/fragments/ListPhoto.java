@@ -1,5 +1,6 @@
 package marinaaaniram.android_instavk.UI.fragments;
 
+import android.app.FragmentTransaction;
 import android.app.ListFragment;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
@@ -10,8 +11,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import marinaaaniram.android_instavk.R;
 import marinaaaniram.android_instavk.model.REST.ServiceHelper;
@@ -26,10 +29,19 @@ public class ListPhoto extends ListFragment implements android.app.LoaderManager
     private static final int LOADER_ID = 3;
     private PhotoAdapter photoAdapter;
 
+    private String currentUser;
+    private String currentAlbum;
+    private List<String> photosIdList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        photosIdList = new ArrayList<String>();
+
+        currentUser = getArguments().get("user_id").toString();
+        currentAlbum = getArguments().get("album_id").toString();
+
         return inflater.inflate(R.layout.fragment_list, null);
     }
 
@@ -48,9 +60,6 @@ public class ListPhoto extends ListFragment implements android.app.LoaderManager
     public void onStart() {
         super.onStart();
 
-        String currentUser = getArguments().get("user_id").toString();
-        String currentAlbum = getArguments().get("album_id").toString();
-
         ServiceHelper serviceHelper = new ServiceHelper(getActivity().getApplicationContext());
         serviceHelper.getPhotosFormAlbum(currentAlbum, currentUser);
     }
@@ -59,9 +68,6 @@ public class ListPhoto extends ListFragment implements android.app.LoaderManager
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String uri = MyContentProvider.concat_strings("content://", MyContentProvider.AUTHORITY,
                 "/", MyContentProvider.TABLE_PHOTOS);
-
-        String currentUser = getArguments().get("user_id").toString();
-        String currentAlbum = getArguments().get("album_id").toString();
 
         return new CursorLoader(getActivity(), Uri.parse(uri),
                 new String[]{ "_id", "id", "owner_id", "album_id", "photo_75" }, "owner_id = ?  and album_id = ?",
@@ -74,6 +80,7 @@ public class ListPhoto extends ListFragment implements android.app.LoaderManager
 
         while(data.moveToNext()) {
             photo_lnk.add(data.getString(data.getColumnIndex("photo_75")));
+            photosIdList.add(data.getString(data.getColumnIndex("id")));
         }
 
         setListAdapter(photoAdapter);
@@ -83,5 +90,23 @@ public class ListPhoto extends ListFragment implements android.app.LoaderManager
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
+    }
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+        BigPhoto bigPhoto = new BigPhoto();
+
+        Bundle args = new Bundle();
+
+        args.putString("user_id", currentUser);
+        args.putString("id", photosIdList.get(position));
+
+        bigPhoto.setArguments(args);
+
+        FragmentTransaction fragmentTransaction = null;
+        fragmentTransaction = getActivity().getFragmentManager().beginTransaction().replace(R.id.container, bigPhoto);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 }
