@@ -47,10 +47,9 @@ public class ServiceHelper {
         }
     }
 
-    public void getPhotosFormAlbum(int album_id) {
+    public void getPhotosFormAlbum(String album_id, String user_id) {
         // TODO safekeeping
         if (sharedPreferences.contains("access_token") && sharedPreferences.contains("user_id")) {
-            String user_id = sharedPreferences.getString("user_id", " ");
             String access_token = sharedPreferences.getString("access_token", " ");
 
             String url = URL_VK_API + "photos.get?" +

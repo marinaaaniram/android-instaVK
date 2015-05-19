@@ -46,6 +46,12 @@ public class TestMenuActivity extends ActionBarActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test_menu);
 
+        sharedPreferences = getSharedPreferences("access", Context.MODE_PRIVATE);
+        if (sharedPreferences.getString("access_token", "") .isEmpty()) {
+            Intent intent = new Intent(TestMenuActivity.this, AuthorizationActivity.class);
+            startActivity(intent);
+        }
+
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
@@ -59,13 +65,7 @@ public class TestMenuActivity extends ActionBarActivity
 
         // JUST FOR CHECK DATABASE
         // Info log with tag - dev_log
-        show_database_data(MyContentProvider.TABLE_ALBUMS, MyContentProvider.TABLE_PHOTOS, MyContentProvider.TABLE_USERS);
-
-        sharedPreferences = getSharedPreferences("access", Context.MODE_PRIVATE);
-        if (sharedPreferences.getString("access_token", "") .isEmpty()) {
-            Intent intent = new Intent(TestMenuActivity.this, AuthorizationActivity.class);
-            startActivity(intent);
-        }
+        //show_database_data(MyContentProvider.TABLE_ALBUMS, MyContentProvider.TABLE_PHOTOS, MyContentProvider.TABLE_USERS);
     }
 
     @Override

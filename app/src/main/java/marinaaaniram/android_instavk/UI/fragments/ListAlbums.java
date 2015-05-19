@@ -1,5 +1,6 @@
 package marinaaaniram.android_instavk.UI.fragments;
 
+import android.app.FragmentTransaction;
 import android.app.ListFragment;
 import android.app.LoaderManager;
 import android.content.Loader;
@@ -12,9 +13,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 
 import java.util.ArrayList;
+import java.util.List;
 
 import marinaaaniram.android_instavk.R;
 import marinaaaniram.android_instavk.model.REST.ServiceHelper;
@@ -25,7 +28,10 @@ import marinaaaniram.android_instavk.model.utils.ImageAdapter;
 public class ListAlbums extends ListFragment implements android.app.LoaderManager.LoaderCallbacks<Cursor>{
 
     private static final int LOADER_ID = 1;
+
     private ImageAdapter imageAdapter;
+    private ArrayList<String> albumsIdList;
+    private String currentUser;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -36,9 +42,10 @@ public class ListAlbums extends ListFragment implements android.app.LoaderManage
     @Override
     public void onStart() {
         super.onStart();
-
+        albumsIdList = new ArrayList<String>();
+        currentUser = getArguments().get("user_id").toString();
         ServiceHelper serviceHelper = new ServiceHelper(getActivity().getApplicationContext());
-        serviceHelper.getUserAlbumsLink(getArguments().get("user_id").toString());
+        serviceHelper.getUserAlbumsLink(currentUser);
     }
 
     @Override
@@ -63,7 +70,7 @@ public class ListAlbums extends ListFragment implements android.app.LoaderManage
                 "/", MyContentProvider.TABLE_ALBUMS);
 
         return new CursorLoader(getActivity(), Uri.parse(uri),
-                new String[]{"_id", "title", "thumb_src"}, "owner_id = ?",
+                new String[]{ "_id", "title", "thumb_src", "id" }, "owner_id = ?",
                 new String[] {getArguments().get("user_id").toString()}, null);
     }
 
@@ -75,11 +82,30 @@ public class ListAlbums extends ListFragment implements android.app.LoaderManage
         while(data.moveToNext()) {
             title.add(data.getString(data.getColumnIndex("title")));
             thumb_src.add(data.getString(data.getColumnIndex("thumb_src")));
+            albumsIdList.add(data.getString(data.getColumnIndex("id")));
         }
         imageAdapter.updateResults(title, thumb_src);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
+    }
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+        ListPhoto listPhoto = new ListPhoto();
+
+        Bundle args = new Bundle();
+
+        args.putString("user_id", currentUser);
+        args.putString("album_id", albumsIdList.get(position));
+
+        listPhoto.setArguments(args);
+
+        FragmentTransaction fragmentTransaction = null;
+        fragmentTransaction = getActivity().getFragmentManager().beginTransaction().replace(R.id.container, listPhoto);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 }

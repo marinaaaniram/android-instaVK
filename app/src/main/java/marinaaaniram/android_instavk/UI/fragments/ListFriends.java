@@ -61,6 +61,7 @@ public class ListFriends extends ListFragment implements android.app.LoaderManag
         super.onResume();
     }
 
+    @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
         ListAlbums listAlbums = new ListAlbums();
