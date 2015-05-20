@@ -1,5 +1,6 @@
 package marinaaaniram.android_instavk.UI.fragments;
 
+import android.app.ActionBar;
 import android.app.FragmentTransaction;
 import android.app.ListFragment;
 import android.app.LoaderManager;
@@ -8,6 +9,7 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +31,8 @@ import marinaaaniram.android_instavk.model.utils.ImageAdapter;
 public class ListFriends extends ListFragment implements android.app.LoaderManager.LoaderCallbacks<Cursor>{
 
     private static final int LOADER_ID = 2;
+    private static final String action_bar_title = "Друзья";
+
     private ImageAdapter imageAdapter;
     private Vector<String> idFriend = new Vector<String>();
 
@@ -40,6 +44,11 @@ public class ListFriends extends ListFragment implements android.app.LoaderManag
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        android.support.v7.app.ActionBar actionBar = ((ActionBarActivity)getActivity()).getSupportActionBar();
+        if(actionBar != null){
+            actionBar.setTitle(action_bar_title);
+        }
         return inflater.inflate(R.layout.fragment_list, null);
     }
 

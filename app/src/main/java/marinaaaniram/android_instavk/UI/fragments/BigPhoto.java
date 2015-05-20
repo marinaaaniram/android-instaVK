@@ -1,5 +1,6 @@
 package marinaaaniram.android_instavk.UI.fragments;
 
+import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.Context;
@@ -8,6 +9,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +30,8 @@ import marinaaaniram.android_instavk.model.utils.PhotoAdapter;
  */
 public class BigPhoto extends Fragment {
 
+    private static final String action_bar_title = "Увеличенная фотография";
+
     private String currentUser;
     private String currentPhoto;
     private ImageView photoView;
@@ -41,6 +45,11 @@ public class BigPhoto extends Fragment {
 
         currentUser = getArguments().get("user_id").toString();
         currentPhoto = getArguments().get("id").toString();
+
+        android.support.v7.app.ActionBar actionBar = ((ActionBarActivity)getActivity()).getSupportActionBar();
+        if(actionBar != null){
+            actionBar.setTitle(action_bar_title);
+        }
 
         return inflater.inflate(R.layout.fragment_big_photo, null);
     }

@@ -1,5 +1,6 @@
 package marinaaaniram.android_instavk.UI.fragments;
 
+import android.app.ActionBar;
 import android.app.FragmentTransaction;
 import android.app.ListFragment;
 import android.app.LoaderManager;
@@ -8,6 +9,7 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +29,8 @@ import marinaaaniram.android_instavk.model.utils.PhotoAdapter;
  */
 public class ListPhoto extends ListFragment implements android.app.LoaderManager.LoaderCallbacks<Cursor> {
     private static final int LOADER_ID = 3;
+    private static final String action_bar_title = "Фото в альбоме";
+
     private PhotoAdapter photoAdapter;
 
     private String currentUser;
@@ -43,6 +47,11 @@ public class ListPhoto extends ListFragment implements android.app.LoaderManager
 
         currentUser = getArguments().get("user_id").toString();
         currentAlbum = getArguments().get("album_id").toString();
+
+        android.support.v7.app.ActionBar actionBar = ((ActionBarActivity)getActivity()).getSupportActionBar();
+        if(actionBar != null){
+            actionBar.setTitle(action_bar_title);
+        }
 
         return inflater.inflate(R.layout.fragment_list, null);
     }

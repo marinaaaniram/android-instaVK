@@ -3,12 +3,15 @@ package marinaaaniram.android_instavk.UI.fragments;
 import android.app.FragmentTransaction;
 import android.app.ListFragment;
 import android.app.LoaderManager;
+import android.content.Context;
 import android.content.Loader;
 import android.content.CursorLoader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +31,8 @@ import marinaaaniram.android_instavk.model.utils.ImageAdapter;
 public class ListAlbums extends ListFragment implements android.app.LoaderManager.LoaderCallbacks<Cursor>{
 
     private static final int LOADER_ID = 1;
+    private static final String action_bar_title = "Мои альбомы";
+
     private static ArrayList<String> title;
     private static ArrayList<String> thumb_src;
 
@@ -38,6 +43,13 @@ public class ListAlbums extends ListFragment implements android.app.LoaderManage
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        ActionBar actionBar = ((ActionBarActivity)getActivity()).getSupportActionBar();
+
+        if(actionBar != null){
+            actionBar.setTitle(action_bar_title);
+        }
+
         return inflater.inflate(R.layout.fragment_list, null);
     }
 

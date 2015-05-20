@@ -6,9 +6,9 @@
     <string name="title_activity_authorization">authorizationActivity</string>
     <string name="log_tag">dev_log</string>
     <string name="title_activity_test_menu">TestMenuActivity</string>
-    <string name="title_section1">Albums</string>
-    <string name="title_section2">Friends</string>
-    <string name="title_section3">Log out</string>
+    <string name="title_section1">Мои альбомы</string>
+    <string name="title_section2">Друзья</string>
+    <string name="title_section3">Выход</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Example action</string>

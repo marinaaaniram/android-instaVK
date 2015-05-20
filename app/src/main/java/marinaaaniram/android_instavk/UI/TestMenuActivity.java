@@ -38,7 +38,6 @@ public class TestMenuActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     private NavigationDrawerFragment mNavigationDrawerFragment;
-    private CharSequence mTitle;
     private SharedPreferences sharedPreferences = null;
 
     @Override
@@ -55,13 +54,11 @@ public class TestMenuActivity extends ActionBarActivity
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
-        mTitle = getTitle();
 
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
-        mTitle = "Albums";
 
 
         // JUST FOR CHECK DATABASE
@@ -86,14 +83,12 @@ public class TestMenuActivity extends ActionBarActivity
                 fragmentTransaction = getFragmentManager().beginTransaction().replace(R.id.container, listAlbums);
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
-                mTitle = "Albums";
                 break;
             case 1:
                 ListFriends listFriends = new ListFriends();
                 fragmentTransaction = getFragmentManager().beginTransaction().replace(R.id.container, listFriends);
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
-                mTitle = "Friends";
                 break;
             case 2:
                 sharedPreferences = getSharedPreferences("access", Context.MODE_PRIVATE);
@@ -110,7 +105,6 @@ public class TestMenuActivity extends ActionBarActivity
     public void restoreActionBar() {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setTitle(mTitle);
     }
 
 
