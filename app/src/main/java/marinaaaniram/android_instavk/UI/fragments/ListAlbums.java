@@ -28,6 +28,8 @@ import marinaaaniram.android_instavk.model.utils.ImageAdapter;
 public class ListAlbums extends ListFragment implements android.app.LoaderManager.LoaderCallbacks<Cursor>{
 
     private static final int LOADER_ID = 1;
+    private static ArrayList<String> title;
+    private static ArrayList<String> thumb_src;
 
     private ImageAdapter imageAdapter;
     private ArrayList<String> albumsIdList;
@@ -57,15 +59,16 @@ public class ListAlbums extends ListFragment implements android.app.LoaderManage
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        imageAdapter = new ImageAdapter(getActivity(), R.layout.fragment_items);
-        setListAdapter(imageAdapter);
-
         LoaderManager.LoaderCallbacks<Cursor> mCallbacks = this;
         getLoaderManager().initLoader(LOADER_ID, null, mCallbacks);
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+
+        imageAdapter = new ImageAdapter(getActivity(), R.layout.fragment_items);
+        setListAdapter(imageAdapter);
+
         String uri = MyContentProvider.concat_strings("content://", MyContentProvider.AUTHORITY,
                 "/", MyContentProvider.TABLE_ALBUMS);
 
@@ -76,13 +79,16 @@ public class ListAlbums extends ListFragment implements android.app.LoaderManage
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        ArrayList<String> title = new ArrayList<String>();
-        ArrayList<String> thumb_src = new ArrayList<String>();
+        if (data.moveToFirst()) {
 
-        while(data.moveToNext()) {
-            title.add(data.getString(data.getColumnIndex("title")));
-            thumb_src.add(data.getString(data.getColumnIndex("thumb_src")));
-            albumsIdList.add(data.getString(data.getColumnIndex("id")));
+            title = new ArrayList<String>();
+            thumb_src = new ArrayList<String>();
+
+            do {
+                title.add(data.getString(data.getColumnIndex("title")));
+                thumb_src.add(data.getString(data.getColumnIndex("thumb_src")));
+                albumsIdList.add(data.getString(data.getColumnIndex("id")));
+            } while (data.moveToNext());
         }
         imageAdapter.updateResults(title, thumb_src);
     }

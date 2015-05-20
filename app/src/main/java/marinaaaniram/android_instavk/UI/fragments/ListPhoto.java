@@ -33,6 +33,8 @@ public class ListPhoto extends ListFragment implements android.app.LoaderManager
     private String currentAlbum;
     private List<String> photosIdList;
 
+    private static ArrayList<String> photo_lnk;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -49,9 +51,6 @@ public class ListPhoto extends ListFragment implements android.app.LoaderManager
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        photoAdapter = new PhotoAdapter(getActivity(), R.layout.photos_items);
-        setListAdapter(photoAdapter);
-
         LoaderManager.LoaderCallbacks<Cursor> mCallbacks = this;
         getLoaderManager().initLoader(LOADER_ID, null, mCallbacks);
     }
@@ -66,6 +65,10 @@ public class ListPhoto extends ListFragment implements android.app.LoaderManager
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+
+        photoAdapter = new PhotoAdapter(getActivity(), R.layout.photos_items);
+        setListAdapter(photoAdapter);
+
         String uri = MyContentProvider.concat_strings("content://", MyContentProvider.AUTHORITY,
                 "/", MyContentProvider.TABLE_PHOTOS);
 
@@ -76,14 +79,15 @@ public class ListPhoto extends ListFragment implements android.app.LoaderManager
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        ArrayList<String> photo_lnk = new ArrayList<String>();
+        if (data.moveToFirst()) {
+            photo_lnk = new ArrayList<String>();
 
-        while(data.moveToNext()) {
-            photo_lnk.add(data.getString(data.getColumnIndex("photo_75")));
-            photosIdList.add(data.getString(data.getColumnIndex("id")));
+            do {
+                photo_lnk.add(data.getString(data.getColumnIndex("photo_75")));
+                photosIdList.add(data.getString(data.getColumnIndex("id")));
+            } while (data.moveToNext());
+
         }
-
-        setListAdapter(photoAdapter);
         photoAdapter.updateResults(photo_lnk);
     }
 

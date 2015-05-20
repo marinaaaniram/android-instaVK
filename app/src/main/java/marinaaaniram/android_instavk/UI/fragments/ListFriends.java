@@ -32,6 +32,11 @@ public class ListFriends extends ListFragment implements android.app.LoaderManag
     private ImageAdapter imageAdapter;
     private Vector<String> idFriend = new Vector<String>();
 
+    private static ArrayList<String> first_name;
+    private static ArrayList<String> last_name;
+    private static ArrayList<String> title;
+    private static ArrayList<String> avatar;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -41,9 +46,6 @@ public class ListFriends extends ListFragment implements android.app.LoaderManag
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        imageAdapter = new ImageAdapter(getActivity(), R.layout.fragment_items);
-        setListAdapter(imageAdapter);
 
         LoaderManager.LoaderCallbacks<Cursor> mCallbacks = this;
         getLoaderManager().initLoader(LOADER_ID, null, mCallbacks);
@@ -77,6 +79,10 @@ public class ListFriends extends ListFragment implements android.app.LoaderManag
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+
+        imageAdapter = new ImageAdapter(getActivity(), R.layout.fragment_items);
+        setListAdapter(imageAdapter);
+
         String uri = MyContentProvider.concat_strings("content://", MyContentProvider.AUTHORITY,
                 "/", MyContentProvider.TABLE_USERS);
         return new CursorLoader(getActivity(), Uri.parse(uri),
@@ -85,24 +91,24 @@ public class ListFriends extends ListFragment implements android.app.LoaderManag
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        ArrayList<String> first_name = new ArrayList<String>();
-        ArrayList<String> last_name = new ArrayList<String>();
-        ArrayList<String> title = new ArrayList<String>();
+        if (data.moveToFirst()) {
 
-        ArrayList<String> avatar = new ArrayList<String>();
+            first_name  = new ArrayList<String>();
+            last_name   = new ArrayList<String>();
+            title       = new ArrayList<String>();
+            avatar      = new ArrayList<String>();
 
-        while(data.moveToNext()) {
-            first_name.add(data.getString(data.getColumnIndex("first_name")));
-            last_name.add(data.getString(data.getColumnIndex("last_name")));
-            avatar.add(data.getString(data.getColumnIndex("photo_50")));
-            idFriend.addElement(data.getString(data.getColumnIndex("id")));
+            do {
+                first_name.add(data.getString(data.getColumnIndex("first_name")));
+                last_name.add(data.getString(data.getColumnIndex("last_name")));
+                avatar.add(data.getString(data.getColumnIndex("photo_50")));
+                idFriend.addElement(data.getString(data.getColumnIndex("id")));
+            } while (data.moveToNext());
+
+            for (int i = 0; i < first_name.size(); ++i) {
+                title.add(MyContentProvider.concat_strings(first_name.get(i), " ", last_name.get(i)));
+            }
         }
-
-        for(int i = 0; i<first_name.size(); ++i){
-            title.add(MyContentProvider.concat_strings(first_name.get(i), " ", last_name.get(i)));
-        }
-        setListAdapter(null);
-        setListAdapter(imageAdapter);
         imageAdapter.updateResults(title, avatar);
     }
 

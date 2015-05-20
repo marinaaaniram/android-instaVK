@@ -139,7 +139,8 @@ public class TestMenuActivity extends ActionBarActivity
 
     @Override
     public void onBackPressed() {
-        if (getFragmentManager().getBackStackEntryCount() > 0 ){
+        int count = getFragmentManager().getBackStackEntryCount();
+        if (count > 0 ){
             getFragmentManager().popBackStack();
         } else {
             super.onBackPressed();

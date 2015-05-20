@@ -34,7 +34,7 @@ public class RestService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Log.d(getString(R.string.log_tag), "starting...");
+        Log.d(getString(R.string.log_tag), "RestService starting...");
         String urlString = intent.getStringExtra("url");
         JSONObject response_json = null;
 
@@ -72,7 +72,6 @@ public class RestService extends IntentService {
                             MyContentProvider.AUTHORITY, "/", table_name);
                     getContentResolver().insert(Uri.parse(uri_query), cv);
                 }
-
 
             } catch (JSONException e) {
                 Log.e(JsonParser.log_json, "Can not parse json");
